@@ -1,26 +1,92 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React, { useState } from "react"
+import "storm-react-diagrams/dist/style.min.css"
+import './diagram.css'
+import { Box2x2 } from './Box'
+import { checkDate, solve, dateParse, mod, strToDate, getAge } from "./Utils";
+
+let defaultDate = localStorage.getItem("defDate") || "24.05.1975"
+
+export function App() {
+
+  let [text, setText] = useState(defaultDate)
+  let [date, setDate] = useState(defaultDate)
+  let [alarm, setAlarm] = useState()
+
+  function checkDate1(text) {
+
+    if (checkDate(text)) {
+      setAlarm(undefined)
+      setDate(text)
+      localStorage.setItem("defDate", text)
+      return
+    }
+
+    setAlarm("неверная дата")
+  }
+
+  let table = undefined
+
+  if (!alarm) {
+    let { d: dd, m: mm, y: yy } = dateParse(date)
+    let { sky, earth, m, f } = solve(dd, mm, yy)
+
+    let headerStyle = { textAlign: "right" }
+
+    let summSE = mod(sky + earth)
+    let summMF = mod(m + f)
+
+    let spirit = mod(summSE + summMF)
+
+    let borderStyle = "3px solid gray"
+
+    table = (
+      <table style={{ margin: "10px 0 10px 0" }}>
+        <tr style={{ borderTop: borderStyle }}>
+          <td style={{ ...headerStyle, borderBottom: borderStyle }}>Возраст :</td>
+          <td colspan="5" style={{ borderBottom: borderStyle }}>{getAge(strToDate(date))}</td>
+        </tr>
+        <tr >
+          <td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td style={headerStyle}>Небо :</td>
+          <td>{sky}</td>
+          <td style={{ borderLeft: borderStyle }}></td>
+          <td style={headerStyle}>M :</td>
+          <td>{m}</td>
+          <td style={{ borderLeft: borderStyle }}></td>
+        </tr>
+        <tr>
+          <td style={headerStyle}>Земля :</td>
+          <td>{earth}</td>
+          <td style={{ borderLeft: borderStyle }}>&nbsp;&rArr; {summSE}</td>
+          <td style={headerStyle}>Ж :</td>
+          <td>{f}</td>
+          <td style={{ borderLeft: borderStyle }}>&nbsp;&rArr; {summMF}</td>
+        </tr>
+        <tr style={{ borderBottom: borderStyle }}>
+          <td  ></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr style={{ borderBottom: borderStyle }}>
+          <td style={headerStyle}>Духовное :</td>
+          <td>{spirit}</td>
+          <td></td>
+          <td style={headerStyle}>Планетарное :</td>
+          <td>{mod(spirit + summMF)}</td>
+          <td></td>
+        </tr>
+      </table >
+    )
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: "10px" }}>
+      {alarm && <div style={{ color: "red" }}>{alarm}</div>}
+      <input className="bp3-input" type="text" placeholder="дд.мм.гггг" onChange={(e) => setText(e.target.value)} value={text} />
+      <button className="bp3-button" type="button" onClick={() => checkDate1(text)}>обновить</button>
+      {table}
+      <Box2x2 date={date} />
     </div>
-  );
+  )
 }
-
-export default App;
