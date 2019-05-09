@@ -38,44 +38,46 @@ export function App() {
 
     let spirit = mod(summSE + summMF)
 
-    let borderStyle = "3px solid gray"
+    let borderStyle = "1px solid lightgray"
 
     table = (
       <table style={{ margin: "10px 0 10px 0" }}>
-        <tr style={{ borderTop: borderStyle }}>
-          <td style={{ ...headerStyle, borderBottom: borderStyle }}>Возраст :</td>
-          <td colspan="5" style={{ borderBottom: borderStyle }}>{getAge(strToDate(date))}</td>
-        </tr>
-        <tr >
-          <td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-          <td style={headerStyle}>Небо :</td>
-          <td>{sky}</td>
-          <td style={{ borderLeft: borderStyle }}></td>
-          <td style={headerStyle}>M :</td>
-          <td>{m}</td>
-          <td style={{ borderLeft: borderStyle }}></td>
-        </tr>
-        <tr>
-          <td style={headerStyle}>Земля :</td>
-          <td>{earth}</td>
-          <td style={{ borderLeft: borderStyle }}>&nbsp;&rArr; {summSE}</td>
-          <td style={headerStyle}>Ж :</td>
-          <td>{f}</td>
-          <td style={{ borderLeft: borderStyle }}>&nbsp;&rArr; {summMF}</td>
-        </tr>
-        <tr style={{ borderBottom: borderStyle }}>
-          <td  ></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        <tr style={{ borderBottom: borderStyle }}>
-          <td style={headerStyle}>Духовное :</td>
-          <td>{spirit}</td>
-          <td></td>
-          <td style={headerStyle}>Планетарное :</td>
-          <td>{mod(spirit + summMF)}</td>
-          <td></td>
-        </tr>
+        <tbody>
+          <tr style={{ borderTop: borderStyle }}>
+            <td style={{ ...headerStyle, borderBottom: borderStyle }}>Возраст :</td>
+            <td colSpan="5" style={{ borderBottom: borderStyle }}>{getAge(strToDate(date))}</td>
+          </tr>
+          <tr >
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style={headerStyle}>Небо :</td>
+            <td>{sky}</td>
+            <td rowSpan="2" ><div className="braces"><div className="curly">{summSE}</div></div></td>
+            <td style={headerStyle}>M :</td>
+            <td>{m}</td>
+            <td rowSpan="2" ><div className="braces"><div className="curly">{summMF}</div></div></td>
+          </tr>
+          <tr>
+            <td style={headerStyle}>Земля :</td>
+            <td>{earth}</td>
+
+            <td style={headerStyle}>Ж :</td>
+            <td>{f}</td>
+
+          </tr>
+          <tr style={{ borderBottom: borderStyle }}>
+            <td  ></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr style={{ borderBottom: borderStyle }}>
+            <td style={headerStyle}>Духовное :</td>
+            <td>{spirit}</td>
+            <td></td>
+            <td style={headerStyle}>Планетарное :</td>
+            <td>{mod(spirit + summMF)}</td>
+            <td></td>
+          </tr>
+        </tbody>
       </table >
     )
   }
