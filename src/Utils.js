@@ -91,10 +91,15 @@ export function solve(dd, mm, yy) {
 
   let a2 = mod(a + e)
   let a3 = mod(a + a2)
+  let a4 = mod(a2 + e)
+
   let b2 = mod(b + e)
   let b3 = mod(b + b2)
+  let b4 = mod(b2 + e)
+
   let c2 = mod(c + e)
   let c3 = mod(c + c2)
+
   let d2 = mod(d + e)
   let d3 = mod(d + d2)
 
@@ -123,7 +128,7 @@ export function solve(dd, mm, yy) {
   let f = mod(b1 + d1)
 
   return {
-    a, b, c, d, e, a1, b1, c1, d1, a2, a3, b2, b3, c2, c3, d2, d3, c4, c41, c42, a12, b12, c12, d12, a13, b13, c13, d13, a04, b04,
+    a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2, c3, d2, d3, c4, c41, c42, a12, b12, c12, d12, a13, b13, c13, d13, a04, b04,
     sky, earth, m, f, years1, years2, years3, years4, years5, years6, years7, years8
   }
 }

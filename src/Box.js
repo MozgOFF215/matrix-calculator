@@ -27,7 +27,7 @@ function newYearsNodes(data, startGrad, endGrad, startDiam, endDiam, color) {
   return result
 }
 
-function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, b2, b3, c2, c3, d2, d3, c4, c41, c42, a12, b12, c12, d12, a13, b13, c13, d13, a04, b04,
+function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2, c3, d2, d3, c4, c41, c42, a12, b12, c12, d12, a13, b13, c13, d13, a04, b04,
   years1, years2, years3, years4, years5, years6, years7, years8 }) {
   let na = newNode(a, -90, 500, "violet")
   let nb = newNode(b, 0, 500, "violet")
@@ -43,9 +43,11 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, b2, b3, c2, c3, d2
 
   let na2 = newNode(a2, -90, 350)
   let na3 = newNode(a3, -90, 425)
+  let na4 = newNode(a4, -90, 275)
 
   let nb2 = newNode(b2, 0, 350)
   let nb3 = newNode(b3, 0, 425)
+  let nb4 = newNode(b4, 0, 275)
 
   let nc2 = newNode(c2, 90, 350, "orange")
   let nc3 = newNode(c3, 90, 425)
@@ -83,7 +85,7 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, b2, b3, c2, c3, d2
     na, nb, nc, nd,
     ne,
     na1, nb1, nc1, nd1,
-    na2, na3, nb2, nb3, nc2, nc3, nd2, nd3,
+    na2, na3, na4, nb2, nb3, nb4, nc2, nc3, nd2, nd3,
     nc4, nc41, nc42,
     na12, nb12, nc12, nd12,
     na13, nb13, nc13, nd13,
@@ -107,10 +109,12 @@ export function Box2x2({ diam, dx, dy, date }) {
 
   engine.setDiagramModel(model);
 
-  return <DiagramWidget className="srd-demo-canvas" diagramEngine={engine} />;
+  return <DiagramWidget className="srd-demo-canvas" diagramEngine={engine}
+    width={550} height={550}
+  />
 }
 
 Box2x2.defaultProps = {
   diam: 500,
-  dx: 100, dy: 100
+  dx: 20, dy: 20
 }

@@ -1,0 +1,95 @@
+.srd-diagram {
+  /* height: 100vh; */
+  overflow-x: auto;
+  max-width: 580px;
+  width: 580px;
+  height: 580px;
+}
+
+.braces {
+  position: relative;
+  padding: .3em .5em;
+  margin-left: 1em;
+}
+.braces::before,
+.braces::after,
+.curly::before,
+.curly::after {
+  content: "";
+  position:absolute;
+  width: .8em;
+  height: 25%;
+}
+.braces::before,
+.braces::after {
+  left: -1.6em;
+  border-right: 2px solid;
+}
+.braces::before {
+  top: 0;
+  border-top-right-radius: .8em;
+}
+.braces::after {
+  bottom: 0;
+  border-bottom-right-radius: .8em;
+}
+.curly::before,
+.curly::after {
+  left: -0.8em;
+  border-left: 2px solid;
+}
+.curly::before {
+  top: 25%;
+  border-bottom-left-radius: .8em;
+}
+.curly::after {
+  bottom: 25%;
+  border-top-left-radius: .8em;
+}
+
+.center {
+  margin: auto;
+  width: 100%;
+  border: 3px solid #73AD21;
+  padding: 10px;
+}
+
+
+.container {
+  width: 580px;
+  height: 580px;
+  display: flex; /* or inline-flex */
+  align-items: stretch;
+}
+
+.container-flex {
+  display: flex; /* or inline-flex */
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+img{
+  width: 500px;
+  height: 500px;
+}
+
+table{
+  border-collapse: collapse;
+  width: 100%; 
+  margin: 0 0 10px 0;
+}
+
+td, th{
+  border: 1px solid lightgray;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;}
+
+th{
+  text-align: center;
+  background-color: #c0e4c2;
+  color: green;
+  border: 1px solid lightgray;
+}

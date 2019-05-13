@@ -5,13 +5,15 @@
   "dependencies": {
     "@blueprintjs/core": "^3.15.1",
     "@blueprintjs/table": "^3.5.0",
+    "html2canvas": "^1.0.0-rc.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
+    "react-to-print": "^2.1.2",
     "storm-react-diagrams": "^5.2.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=9000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
