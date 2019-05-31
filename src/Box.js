@@ -1,11 +1,8 @@
-import React from "react"
-import { DiagramEngine, DiagramModel, DefaultNodeModel, DiagramWidget } from "storm-react-diagrams"
+import React, { useCallback } from "react"
 import { dateParse, getPosX, getPosY, solve } from './Utils'
 
-function newNode(name, grad, diam = 500, color = null) {
-  let node = color ? new DefaultNodeModel(name, color) : new DefaultNodeModel(name)
-  node.setPosition(getPosX(grad, diam), getPosY(grad, diam))
-  node.setLocked(true)
+function newNode(name, grad, diam = 500, color = undefined) {
+  let node = { name, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
 
   return node
 }
@@ -29,17 +26,17 @@ function newYearsNodes(data, startGrad, endGrad, startDiam, endDiam, color) {
 
 function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2, c3, d2, d3, c4, c41, c42, a12, b12, c12, d12, a13, b13, c13, d13, a04, b04,
   years1, years2, years3, years4, years5, years6, years7, years8 }) {
-  let na = newNode(a, -90, 500, "violet")
-  let nb = newNode(b, 0, 500, "violet")
-  let nc = newNode(c, 90, 500, "red")
-  let nd = newNode(d, 180, 500, "red")
+  let na = newNode(a, -90, 500, "#fce9fc") // "violet")
+  let nb = newNode(b, 0, 500, "#fce9fc") // "violet")
+  let nc = newNode(c, 90, 500, "#ffe6e6") //"red")
+  let nd = newNode(d, 180, 500, "#ffe6e6") //"red")
 
-  let ne = newNode(e, 0, 0, "yellow")
+  let ne = newNode(e, 0, 0, "#ffffcc") // "yellow")
 
-  let na1 = newNode(a1, -45, 500, "gray")
-  let nb1 = newNode(b1, 45, 500, "gray")
-  let nc1 = newNode(c1, 90 + 45, 500, "gray")
-  let nd1 = newNode(d1, 180 + 45, 500, "gray")
+  let na1 = newNode(a1, -45, 500, "#cccccc") // "gray")
+  let nb1 = newNode(b1, 45, 500, "#cccccc") // "gray")
+  let nc1 = newNode(c1, 90 + 45, 500, "#cccccc") // "gray")
+  let nd1 = newNode(d1, 180 + 45, 500, "#cccccc") // "gray")
 
   let na2 = newNode(a2, -90, 350)
   let na3 = newNode(a3, -90, 425)
@@ -49,14 +46,14 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2
   let nb3 = newNode(b3, 0, 425)
   let nb4 = newNode(b4, 0, 275)
 
-  let nc2 = newNode(c2, 90, 350, "orange")
+  let nc2 = newNode(c2, 90, 350, "#ffedcc")// "orange")
   let nc3 = newNode(c3, 90, 425)
 
-  let nd2 = newNode(d2, 180, 350, "orange")
+  let nd2 = newNode(d2, 180, 350, "#ffedcc")// "orange")
   let nd3 = newNode(d3, 180, 425)
-  let nc4 = newNode(c4, 90 + 45, 270, "gray")
-  let nc41 = newNode(c41, 90 + 30, 320, "gray")
-  let nc42 = newNode(c42, 180 - 30, 320, "gray")
+  let nc4 = newNode(c4, 90 + 45, 270, "#cccccc") // "gray")
+  let nc41 = newNode(c41, 90 + 30, 320, "#cccccc") // "gray")
+  let nc42 = newNode(c42, 180 - 30, 320, "#cccccc") // "gray")
   let na12 = newNode(a12, -45, 350)
   let nb12 = newNode(b12, 45, 350)
   let nc12 = newNode(c12, 90 + 45, 350)
@@ -65,12 +62,12 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2
   let nb13 = newNode(b13, 45, 425)
   let nc13 = newNode(c13, 90 + 45, 425)
   let nd13 = newNode(d13, 180 + 45, 425)
-  let na04 = newNode(a04, -90, 180, "green")
-  let nb04 = newNode(b04, 0, 180, "green")
+  let na04 = newNode(a04, -90, 180, "#e6ffe6") // "green")
+  let nb04 = newNode(b04, 0, 180, "#e6ffe6") // "green")
 
   let start = 500
   let end = 100
-  let color = "lightgray"
+  let color = "#f2f2f2" // "lightgray"
 
   let ny1 = newYearsNodes(years1, -90, -45, start, end, color)
   let ny2 = newYearsNodes(years2, -45, 0, start, end, color)
@@ -93,28 +90,50 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2
   ]
 }
 
-export function Box2x2({ diam, dx, dy, date }) {
-
+export function Box({ diam, dx, dy, date }) {
   let { d: dd, m: mm, y: yy } = dateParse(date)
 
-  let engine = new DiagramEngine()
-  engine.installDefaultFactories()
+  let refCanvas = useCallback(canvas => {
+    if (!canvas) return
+    let nodes = createNodes(solve(dd, mm, yy))
+    let ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = "center"
+    ctx.baseLine = "middle"
 
-  let model = new DiagramModel();
+    ctx.font = "bold 14px Arial"
+    let dc = 12
+    nodes.map(d => {
+      ctx.beginPath()
+      ctx.arc(d.x, d.y, dc, 0, 2 * Math.PI)
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 3
+      ctx.stroke()
+      ctx.fillStyle = d.color ? d.color : "white"
+      ctx.fill()
 
-  let nodes = createNodes(solve(dd, mm, yy))
+      ctx.lineWidth = 5
+      ctx.fillStyle = "black"
+      ctx.fillText(d.name, d.x, d.y + 5)
+    })
 
-  model.addAll(...nodes)
+    ctx.fillText(date, 70, 30)
 
+  }, [dd, mm, yy, date])
 
-  engine.setDiagramModel(model);
-
-  return <DiagramWidget className="srd-demo-canvas" diagramEngine={engine}
-    width={550} height={550}
-  />
+  return (
+    <div className="pagebreak">
+      <canvas id="matrix"
+        width={550} height={550}
+        style={{ border: "1px solid #cccccc" }}
+        ref={refCanvas}
+      >
+      </canvas>
+      <h5>Generated on {(new Date()).toDateString()} by using Matrix calculator. Copyright © MozgOFF, 2019</h5>
+    </div>)
 }
 
-Box2x2.defaultProps = {
+Box.defaultProps = {
   diam: 500,
   dx: 20, dy: 20
 }

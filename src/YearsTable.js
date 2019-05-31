@@ -1,57 +1,70 @@
 import React from "react"
-import { dateParse, solve } from "./Utils"
+import { dateParse, solve, mod } from "./Utils"
+import { localize } from "./Locale"
 
-let borderStyle2 = "1px double gray"
+let borderStyle2 = "2px solid gray"
 
-function val(name, num) {
-  return [name, num]
-}
-
-function segment(num) {
-  return num + "-" + (num + 1)
-}
-
-function groupVal(res, start, years1) {
-  years1.map((d, indx) => res.push(val(indx === 3 ? start + 5 : segment(start + (indx > 3 ? 2 : 1) + indx), years1[indx])))
-}
-
-function years(start, a, a1, years1) {
-  let res = []
-  res.push(val(start, a))
-  groupVal(res, start, years1)
-
-  return res
-}
-
-function rows(col1, col2, col3, col4) {
-  let revTab = col1.map((d, indx) => [col1[indx][0], col1[indx][1], col2[indx][0], col2[indx][1], col3[indx][0], col3[indx][1], col4[indx][0], col4[indx][1]])
-  return revTab.map((d, indx) => (
-    <tr>
-      <>{[0, 2, 4, 6].map(j => <>
-        <td style={{ }}>{d[j]}</td>
-        <td style={{ borderRight: borderStyle2, }}>{d[j + 1]}</td>
-      </>)}</>
-    </tr>
-  ))
-}
-
-export function YearsTable({ date }) {
+export const YearsTable = localize(({ date, texts }) => {
 
   let { d: dd, m: mm, y: yy } = dateParse(date)
   let { a, b, c, d, a1, b1, c1, d1, years1, years2, years3, years4, years5, years6, years7, years8 } = solve(dd, mm, yy)
 
+  let ring = [a, ...years1, a1, ...years2, b, ...years3, b1, ...years4, c, ...years5, c1, ...years6, d, ...years7, d1, ...years8]
+
+  function getPeriod(indx) {
+    let a = indx * 5 / 4
+    let a1 = Math.floor(a)
+    let a2 = Math.ceil(a)
+    if (a1 === a2) return a
+    return a1 + "-" + a2
+  }
+
+  let header = <tr style={{ border: borderStyle2 }}>
+    <>{[0, 2].map(j => <>
+      <th key={j}>{texts.year}</th>
+      <th key={j + 1} colSpan="3" style={{ borderRight: borderStyle2 }}>a+b=c</th>
+    </>)}</>
+  </tr>
+
+  let tabCol1 = ring.map((d, indx) => <>
+    <td style={{ color: "gray" }}><i>{getPeriod(indx)}</i></td>
+    <td style={{ color: "#000066" }}>{d}</td>
+    <td style={{ color: "#003300" }}>{ring[(indx + 32) & 0x3f]}</td>
+    <td style={{ borderRight: borderStyle2 }}>{mod(d + ring[(indx + 32) & 0x3f])}</td>
+  </>)
+
   return (
-    <table style={{ margin: "10px 0 10px 0", textAlign: "center", border: borderStyle2 }}>
-      <tbody>
-        <tr style={{ border: borderStyle2 }}>
-          <>{[0, 2, 4, 6].map(j => <>
-            <th key={j} style={{ }}>год</th>
-            <th key={j + 1} style={{ borderRight: borderStyle2 }}>код</th>
-          </>)}</>
-        </tr>
-        <>{rows(years(0, a, a1, years1), years(20, b, b1, years3), years(40, c, c1, years5), years(60, d, d1, years7))}</>
-        <>{rows(years(10, a1, b, years2), years(30, b1, c, years4), years(50, c1, d, years6), years(70, d1, a, years8))}</>
-      </tbody>
-    </table >
+    <>
+      <div style={{ margin: 10 }}>
+        <table style={{ textAlign: "center", border: borderStyle2 }}>
+          <tbody>
+            {header}
+            {tabCol1.map((d, indx) => indx < 16 && <tr>
+              {d}
+              {tabCol1[indx + 16]}
+            </tr>)}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ margin: 10 }}>
+        <table style={{ textAlign: "center", border: borderStyle2 }}>
+          <tbody>
+            {header}
+            {tabCol1.map((d, indx) => indx >= 32 && indx < 48 && <tr>
+              {d}
+              {tabCol1[indx + 16]}
+            </tr>)}
+          </tbody>
+        </table>
+      </div>
+
+    </>
   )
+})
+
+YearsTable.defaultProps = {
+  texts: { year: "year" },
+  "texts-de": { year: "Jahr" },
+  "texts-ru": { year: "лет" },
 }

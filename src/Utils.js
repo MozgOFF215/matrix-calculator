@@ -1,3 +1,5 @@
+import { useLocaleContext } from "./Locale";
+
 export function mod(number) {
   if (number > 22) {
     let str = "" + number
@@ -160,59 +162,99 @@ function dateDiff(date) {
   return { years, months, days }
 }
 
-function textYears(amount) {
+function textYears(amount, locale) {
+
+  if (!locale) locale = "ru"
+
+  if (!amount || amount === 0) return ""
+
+  let last = amount - Math.floor(amount / 10) * 10
+  let prelast = Math.floor((amount - Math.floor(amount / 100) * 100) / 10)
+
+  let word = locale === "en" ? "years" : locale === "de" ? "Jahre" : "лет"
+
+  if (locale === "ru") {
+    if (last === 1 && prelast !== 1) word = "год"
+    if (last >= 2 && last <= 4 && prelast !== 1) word = "года"
+  }
+
+  if (locale === "de") {
+    if (amount === 1) word = "Jahr"
+  }
+
+  if (locale === "en") {
+    if (amount === 1) word = "years"
+  }
+
+  return amount + " " + word + " "
+}
+
+function textMonth(amount, locale) {
   if (!amount || amount === 0) return ""
 
   let last = amount - Math.floor(amount / 10) * 10
   let prelast = Math.floor((amount - Math.floor(amount / 100) * 100) / 10)
 
 
-  let word = "лет"
-  if (last === 1 && prelast !== 1) word = "год"
-  if (last >= 2 && last <= 4 && prelast !== 1) word = "года"
+  let word = locale === "en" ? "month" : locale === "de" ? "Monate" : "месяцев"
+
+  if (locale === "ru") {
+    if (last === 1 && prelast !== 1) word = "месяц"
+    if (last >= 2 && last <= 4 && prelast !== 1) word = "месяца"
+  }
+
+  if (locale === "de") {
+    if (amount === 1) word = "Monat"
+  }
+
+  if (locale === "en") {
+    if (amount === 1) word = "month"
+  }
 
   return amount + " " + word + " "
 }
 
-function textMonth(amount) {
+function textDays(amount, locale) {
   if (!amount || amount === 0) return ""
 
   let last = amount - Math.floor(amount / 10) * 10
   let prelast = Math.floor((amount - Math.floor(amount / 100) * 100) / 10)
 
 
-  let word = "месяцев"
-  if (last === 1 && prelast !== 1) word = "месяц"
-  if (last >= 2 && last <= 4 && prelast !== 1) word = "месяца"
+  let word = locale === "en" ? "days" : locale === "de" ? "Tage" : "дней"
+
+  if (locale === "ru") {
+    if (last === 1 && prelast !== 1) word = "день"
+    if (last >= 2 && last <= 4 && prelast !== 1) word = "дня"
+  }
+
+  if (locale === "de") {
+    if (amount === 1) word = "Tag"
+  }
+
+  if (locale === "en") {
+    if (amount === 1) word = "day"
+  }
 
   return amount + " " + word + " "
 }
 
-function textDays(amount) {
-  if (!amount || amount === 0) return ""
-
-  let last = amount - Math.floor(amount / 10) * 10
-  let prelast = Math.floor((amount - Math.floor(amount / 100) * 100) / 10)
-
-
-  let word = "дней"
-  if (last === 1 && prelast !== 1) word = "день"
-  if (last >= 2 && last <= 4 && prelast !== 1) word = "дня"
-
-  return amount + " " + word + " "
-}
-
-export function getAge(date) {
+export function getAge(date, locale) {
   if (!date) return
   let diff = dateDiff(date)
-  let years = textYears(diff.years)
-  let month = textMonth(diff.months)
-  let days = textDays(diff.days)
+  let years = textYears(diff.years, locale)
+  let month = textMonth(diff.months, locale)
+  let days = textDays(diff.days, locale)
 
   let res = years + month + days
-  if (!years && !month && !days) return "в самом деле сегодня родился(лась)!!!???"
-  if (!month && !days) return years + " ровно"
-  if (!days) return res + " ровно"
+  if (!years && !month && !days)
+    return locale === "en" ? "really born today!!!???"
+      : locale === "de" ? "wirklich heute geboren!!!???"
+        : "в самом деле сегодня родился(лась)!!!???"
+
+  let exactly = locale === "en" ? " exactly" : locale === "de" ? " genau" : " ровно"
+  if (!month && !days) return years + exactly
+  if (!days) return res + exactly
 
   return res
 }
