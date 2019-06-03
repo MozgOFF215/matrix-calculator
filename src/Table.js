@@ -178,7 +178,7 @@ Table.defaultProps = {
     age: "Alter",
     spiritual: "Spirituell",
     planetary: "Planetarisch",
-    power: "Kraft von Stamm",
+    power: "Kraft der Ahnen",
     innerStrength: "Innere Stärke",
     maleKey: "Männlicher Schlüssel",
     femaleKey: "Weiblicher Schlüssel",
