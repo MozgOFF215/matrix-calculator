@@ -1,5 +1,5 @@
 import React from "react"
-import { dateParse, solve, mod } from "./Utils"
+import { dateParse, solve, mod, chekWithStyles } from "./Utils"
 import { localize } from "./Locale"
 
 let borderStyle2 = "2px solid gray"
@@ -26,12 +26,20 @@ export const YearsTable = localize(({ date, texts }) => {
     </>)}</>
   </tr>
 
-  let tabCol1 = ring.map((d, indx) => <>
-    <td style={{ color: "gray" }}><i>{getPeriod(indx)}</i></td>
-    <td style={{ color: "#000066" }}>{d}</td>
-    <td style={{ color: "#003300" }}>{ring[(indx + 32) & 0x3f]}</td>
-    <td style={{ borderRight: borderStyle2 }}>{mod(d + ring[(indx + 32) & 0x3f])}</td>
-  </>)
+  let tabCol1 = ring.map((d, indx) => {
+    let a = d
+    let b = ring[(indx + 32) & 0x3f]
+    let c = mod(d + ring[(indx + 32) & 0x3f])
+
+    let { sa, sb, sc } = chekWithStyles([a, b, c])
+
+    return (<>
+      <td style={{ color: "gray" }}><i>{getPeriod(indx)}</i></td>
+      <td style={{ color: "#000066", ...sa }}>{a}</td>
+      <td style={{ color: "#003300", ...sb }}>{b}</td>
+      <td style={{ borderRight: borderStyle2, ...sc }}>{c}</td>
+    </>)
+  })
 
   return (
     <>

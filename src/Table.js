@@ -1,37 +1,55 @@
 import React from "react"
-import { mod, dateParse, solve, getAge, strToDate } from "./Utils"
+import { mod, dateParse, solve, getAge, strToDate, chekWithStyles } from "./Utils"
 import { localize, useLocaleContext } from "./Locale";
 
 let borderStyle = ""//"1px solid lightgray"
 
 function key(name, num1, num2) {
+  let a = num1
+  let b = num2
+  let c = mod(num1 + num2)
+
+  let { sa, sb, sc } = chekWithStyles([a, b, c])
+
   return (
     <tr>
       <td colSpan="2">{name}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{num1}</td>
-      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center" }}>{num2}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{mod(num1 + num2)}</td>
+      <td style={{ borderLeft: borderStyle, textAlign: "center", ...sa }}>{a}</td>
+      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center", ...sb }}>{b}</td>
+      <td style={{ borderLeft: borderStyle, textAlign: "center", ...sc }}>{c}</td>
     </tr>
   )
 }
 function key_(name, num1, num2) {
+  let a = num1
+  let b = num2
+  let c = mod(num1 + num2)
+
+  let { sa, sb, sc } = chekWithStyles([a, b, c])
+
   return (
     <tr>
       <td>{name}</td>
-      <td style={{ textAlign: "center" }}>{num1}</td>
-      <td style={{ textAlign: "center" }}>{num2}</td>
-      <td style={{ textAlign: "center" }}>{mod(num1 + num2)}</td>
+      <td style={{ textAlign: "center", ...sa }}>{a}</td>
+      <td style={{ textAlign: "center", ...sb }}>{b}</td>
+      <td style={{ textAlign: "center", ...sc }}>{c}</td>
     </tr>
   )
 }
 
 function key2_(name, num1, num2, num3) {
+  let a = num1
+  let b = num2
+  let c = num3
+
+  let { sa, sb, sc } = chekWithStyles([a, b, c])
+
   return (
     <tr style={{ borderTop: borderStyle }}>
       <td>{name}</td>
-      <td style={{ textAlign: "center" }}>{num1}</td>
-      <td style={{ textAlign: "center" }}>{num2}</td>
-      <td style={{ textAlign: "center" }}>{num3}</td>
+      <td style={{ textAlign: "center", ...sa }}>{a}</td>
+      <td style={{ textAlign: "center", ...sb }}>{b}</td>
+      <td style={{ textAlign: "center", ...sc }}>{c}</td>
     </tr>
   )
 }
@@ -87,7 +105,10 @@ export const Table = localize(({ date, texts }) => {
   let { a, b, c, d, a1, b1, c1, d1, a3, b3, a2, b2, a4, b4, c2, d2, e, sky, earth, m, f } = solve(dd, mm, yy)
 
   let summSE = mod(sky + earth)
+  let { sa, sb, sc } = chekWithStyles([sky, earth, summSE])
+
   let summMF = mod(m + f)
+  let { sa: sa1, sb: sb1, sc: sc1 } = chekWithStyles([m, f, summMF])
 
   let spirit = mod(summSE + summMF)
   let genusPower = mod(a1 + b1 + c1 + d1)
@@ -101,17 +122,17 @@ export const Table = localize(({ date, texts }) => {
             {val(texts.age, getAge(strToDate(date), locale))}
             <tr>
               <td style={headerStyle}>{texts.sky}</td>
-              <td>{sky}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly">{summSE}</div></div></td>
+              <td style={sa}>{sky}</td>
+              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc}>{summSE}</div></div></td>
               <td style={headerStyle}>{texts.male}</td>
-              <td>{m}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly">{summMF}</div></div></td>
+              <td style={sa1}>{m}</td>
+              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc1}>{summMF}</div></div></td>
             </tr>
             <tr>
               <td style={headerStyle}>{texts.earth}</td>
-              <td>{earth}</td>
+              <td style={sb}>{earth}</td>
               <td style={headerStyle}>{texts.female}</td>
-              <td>{f}</td>
+              <td style={sb1}>{f}</td>
             </tr>
             {val2(texts.spiritual, spirit, texts.planetary, mod(spirit + summMF))}
             {val(texts.power, genusPower)}

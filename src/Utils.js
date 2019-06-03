@@ -1,4 +1,4 @@
-import { useLocaleContext } from "./Locale";
+import { keys } from "./Keys"
 
 export function mod(number) {
   if (number > 22) {
@@ -258,3 +258,43 @@ export function getAge(date, locale) {
 
   return res
 }
+
+export function checkKey(array) {
+  let res = []
+  let _keys = keys.slice()
+  for (let i = 0; i < _keys.length; i++) {
+    let a = _keys[i].codes.map(d => ({ d }))
+    let b = array.map(d => ({ d }))
+    for (let k = 0; k < b.length; k++) {
+      for (let j = 0; j < a.length; j++) {
+        if (!a[j].m) {
+          if (a[j].d === b[k].d) {
+            a[j].m = true
+            b[k].m = true
+            break
+          }
+        }
+      }
+    }
+
+    if (a.every(d => d.m)) {
+      res.push({ key: i, b })
+      console.log(i, _keys[i].name)
+    }
+  }
+  return res
+}
+
+export function chekWithStyles(array) {
+
+  let keys = checkKey(array)
+  let sa, sb, sc
+  let color = "rgba(0,0,255,0.15)"
+  if (keys.length > 0) {
+    if (keys.filter(i => i.b[0].m).length > 0) sa = { backgroundColor: color }
+    if (keys.filter(i => i.b[1].m).length > 0) sb = { backgroundColor: color }
+    if (keys.filter(i => i.b[2].m).length > 0) sc = { backgroundColor: color }
+  }
+  return { sa, sb, sc }
+}
+

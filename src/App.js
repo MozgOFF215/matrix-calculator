@@ -1,7 +1,7 @@
 
 import React, { useState } from "react"
 import { Matrix } from "./Matrix"
-import { checkDate } from "./Utils"
+import { checkDate, checkKey } from "./Utils"
 import { localize, useLocaleContext, LocaleProvider } from "./Locale"
 
 let defaultDate = localStorage.getItem("defDate") || "24.05.1975"
@@ -38,6 +38,8 @@ const Main = localize(({ texts }) => {
     }
     setAlarm(texts.invalidDate)
   }
+
+  let aa = checkKey([5,6,11])
 
   return (
     <>
