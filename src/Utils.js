@@ -285,16 +285,24 @@ export function checkKey(array) {
   return res
 }
 
-export function chekWithStyles(array) {
+export function chekWithStyles(array, withHole) {
 
   let keys = checkKey(array)
   let sa, sb, sc
   let color = "rgba(0,0,255,0.15)"
+
+  let a=keys.filter(i => i.b[0].m).length > 0
+  let b=keys.filter(i => i.b[1].m).length > 0
+  let c=keys.filter(i => i.b[2].m).length > 0
+
+  if (!b && !withHole) return { sa, sb, sc }
+
   if (keys.length > 0) {
-    if (keys.filter(i => i.b[0].m).length > 0) sa = { backgroundColor: color }
-    if (keys.filter(i => i.b[1].m).length > 0) sb = { backgroundColor: color }
-    if (keys.filter(i => i.b[2].m).length > 0) sc = { backgroundColor: color }
+    if (a) sa = { backgroundColor: color }
+    if (b) sb = { backgroundColor: color }
+    if (c) sc = { backgroundColor: color }
   }
+
   return { sa, sb, sc }
 }
 

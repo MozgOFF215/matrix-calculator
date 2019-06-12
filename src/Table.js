@@ -105,10 +105,10 @@ export const Table = localize(({ date, texts }) => {
   let { a, b, c, d, a1, b1, c1, d1, a3, b3, a2, b2, a4, b4, c2, d2, e, sky, earth, m, f } = solve(dd, mm, yy)
 
   let summSE = mod(sky + earth)
-  let { sa, sb, sc } = chekWithStyles([sky, earth, summSE])
+  let { sa, sb, sc } = chekWithStyles([sky, earth, summSE], true)
 
   let summMF = mod(m + f)
-  let { sa: sa1, sb: sb1, sc: sc1 } = chekWithStyles([m, f, summMF])
+  let { sa: sa1, sb: sb1, sc: sc1 } = chekWithStyles([m, f, summMF], true)
 
   let spirit = mod(summSE + summMF)
   let genusPower = mod(a1 + b1 + c1 + d1)
