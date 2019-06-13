@@ -138,6 +138,8 @@ export function docxReport() {
 
   const image = doc.createImage()
 
+  doc.addParagraph(next())
+
   ////////////////////////////////////////////////////////////////////////////////////////////////
   const packer = new Packer();
 

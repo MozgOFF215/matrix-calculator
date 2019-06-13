@@ -1,5 +1,6 @@
 import React, { useCallback } from "react"
 import { dateParse, getPosX, getPosY, solve, checkKey } from './Utils'
+import { addToSerializeTab as s } from "./Storage"
 
 function newNode(id, name, grad, diam = 500, color = undefined) {
   let node = { id, name, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
@@ -138,7 +139,7 @@ export function Box({ diam, dx, dy, date }) {
         ref={refCanvas}
       >
       </canvas>
-      <h5>Generated on {(new Date()).toDateString()} by using Matrix calculator. Copyright © MozgOFF, 2019</h5>
+      <h5>{s("Generated on " + (new Date()).toDateString() + " by using Matrix calculator. Copyright © MozgOFF, 2019")}</h5>
     </div>)
 }
 
