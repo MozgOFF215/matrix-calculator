@@ -1,13 +1,15 @@
 import React from "react"
 import { mod, dateParse, solve, getAge, strToDate, chekWithStyles } from "./Utils"
 import { localize, useLocaleContext } from "./Locale";
+import { cleanSerializeTab, addToSerializeTab as s } from "./Storage"
 
 let borderStyle = ""//"1px solid lightgray"
 
 function key(name, num1, num2) {
-  let a = num1
-  let b = num2
-  let c = mod(num1 + num2)
+  s(name)
+  let a = s(num1)
+  let b = s(num2)
+  let c = s(mod(num1 + num2))
 
   let { sa, sb, sc } = chekWithStyles([a, b, c])
 
@@ -20,10 +22,12 @@ function key(name, num1, num2) {
     </tr>
   )
 }
+
 function key_(name, num1, num2) {
-  let a = num1
-  let b = num2
-  let c = mod(num1 + num2)
+  s(name)
+  let a = s(num1)
+  let b = s(num2)
+  let c = s(mod(num1 + num2))
 
   let { sa, sb, sc } = chekWithStyles([a, b, c])
 
@@ -38,9 +42,10 @@ function key_(name, num1, num2) {
 }
 
 function key2_(name, num1, num2, num3) {
-  let a = num1
-  let b = num2
-  let c = num3
+  s(name)
+  let a = s(num1)
+  let b = s(num2)
+  let c = s(num3)
 
   let { sa, sb, sc } = chekWithStyles([a, b, c])
 
@@ -58,10 +63,10 @@ function header(name, num1, num2, num3) {
 
   return (
     <tr style={{ borderBottom: "2px solid gray" }}>
-      <th>{name}</th>
-      <th style={{ textAlign: "center" }}>{num1}</th>
-      <th style={{ textAlign: "center" }}>{num2}</th>
-      <th style={{ textAlign: "center" }}>{num3}</th>
+      <th>{s(name)}</th>
+      <th style={{ textAlign: "center" }}>{s(num1)}</th>
+      <th style={{ textAlign: "center" }}>{s(num2)}</th>
+      <th style={{ textAlign: "center" }}>{s(num3)}</th>
     </tr>
   )
 }
@@ -69,8 +74,8 @@ function header(name, num1, num2, num3) {
 function val(name, num) {
   return (
     <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
-      <td colSpan="2">{name}</td>
-      <td colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{num}</td>
+      <td colSpan="2">{s(name)}</td>
+      <td colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num)}</td>
     </tr>
   )
 }
@@ -78,8 +83,8 @@ function val(name, num) {
 function val_h(name, num) {
   return (
     <tr style={{ borderBottom: "2px solid gray" }}>
-      <th colSpan="2">{name}</th>
-      <th colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{num}</th>
+      <th colSpan="2">{s(name)}</th>
+      <th colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num)}</th>
     </tr>
   )
 }
@@ -87,10 +92,10 @@ function val_h(name, num) {
 function val2(name1, num1, name2, num2) {
   return (
     <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
-      <td colSpan="2">{name1}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{num1}</td>
-      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center" }}>{name2}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{num2}</td>
+      <td colSpan="2">{s(name1)}</td>
+      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num1)}</td>
+      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(name2)}</td>
+      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num2)}</td>
     </tr>
   )
 }
@@ -113,6 +118,8 @@ export const Table = localize(({ date, texts }) => {
   let spirit = mod(summSE + summMF)
   let genusPower = mod(a1 + b1 + c1 + d1)
 
+  cleanSerializeTab()
+
   return (
     <>
       <div style={{ margin: 10 }}>
@@ -121,18 +128,18 @@ export const Table = localize(({ date, texts }) => {
             {val_h(texts.birthday, date)}
             {val(texts.age, getAge(strToDate(date), locale))}
             <tr>
-              <td style={headerStyle}>{texts.sky}</td>
-              <td style={sa}>{sky}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc}>{summSE}</div></div></td>
-              <td style={headerStyle}>{texts.male}</td>
-              <td style={sa1}>{m}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc1}>{summMF}</div></div></td>
+              <td style={headerStyle}>{s(texts.sky)}</td>
+              <td style={sa}>{s(sky)}</td>
+              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc}>{s(summSE)}</div></div></td>
+              <td style={headerStyle}>{s(texts.male)}</td>
+              <td style={sa1}>{s(m)}</td>
+              <td rowSpan="2" ><div className="braces"><div className="curly" style={sc1}>{s(summMF)}</div></div></td>
             </tr>
             <tr>
-              <td style={headerStyle}>{texts.earth}</td>
-              <td style={sb}>{earth}</td>
-              <td style={headerStyle}>{texts.female}</td>
-              <td style={sb1}>{f}</td>
+              <td style={headerStyle}>{s(texts.earth)}</td>
+              <td style={sb}>{s(earth)}</td>
+              <td style={headerStyle}>{s(texts.female)}</td>
+              <td style={sb1}>{s(f)}</td>
             </tr>
             {val2(texts.spiritual, spirit, texts.planetary, mod(spirit + summMF))}
             {val(texts.power, genusPower)}

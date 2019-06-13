@@ -1,6 +1,7 @@
 import React from "react"
 import { dateParse, solve, mod, chekWithStyles } from "./Utils"
 import { localize } from "./Locale"
+import { cleanSerializeTab, addToSerializeTab as s } from "./Storage"
 
 let borderStyle2 = "2px solid gray"
 
@@ -19,14 +20,16 @@ export const YearsTable = localize(({ date, texts }) => {
     return a1 + "-" + a2
   }
 
-  let header = <tr style={{ border: borderStyle2 }}>
-    <>{[0, 2].map(j => <>
-      <th key={j}>{texts.year}</th>
-      <th key={j + 1} colSpan="3" style={{ borderRight: borderStyle2 }}>a+b=c</th>
-    </>)}</>
-  </tr>
+  function header() {
+    return (<tr style={{ border: borderStyle2 }}>
+      <>{[0, 2].map(j => <>
+        <th key={j}>{s(texts.year)}</th>
+        <th key={j + 1} colSpan="3" style={{ borderRight: borderStyle2 }}>{s("a+b=c")}</th>
+      </>)}</>
+    </tr>)
+  }
 
-  let tabCol1 = ring.map((d, indx) => {
+  let tabCol = ring.map((d, indx) => {
     let a = d
     let b = ring[(indx + 32) & 0x3f]
     let c = mod(d + ring[(indx + 32) & 0x3f])
@@ -34,10 +37,10 @@ export const YearsTable = localize(({ date, texts }) => {
     let { sa, sb, sc } = chekWithStyles([a, b, c])
 
     return (<>
-      <td style={{ color: "gray" }}><i>{getPeriod(indx)}</i></td>
-      <td style={{ color: "#000066", ...sa }}>{a}</td>
-      <td style={{ color: "#003300", ...sb }}>{b}</td>
-      <td style={{ borderRight: borderStyle2, ...sc }}>{c}</td>
+      <td style={{ color: "gray" }}><i>{s(getPeriod(indx))}</i></td>
+      <td style={{ color: "#000066", ...sa }}>{s(a)}</td>
+      <td style={{ color: "#003300", ...sb }}>{s(b)}</td>
+      <td style={{ borderRight: borderStyle2, ...sc }}>{s(c)}</td>
     </>)
   })
 
@@ -46,10 +49,10 @@ export const YearsTable = localize(({ date, texts }) => {
       <div style={{ margin: 10 }}>
         <table style={{ textAlign: "center", border: borderStyle2 }}>
           <tbody>
-            {header}
-            {tabCol1.map((d, indx) => indx < 16 && <tr>
+            {header()}
+            {tabCol.map((d, indx) => indx < 16 && <tr>
               {d}
-              {tabCol1[indx + 16]}
+              {tabCol[indx + 16]}
             </tr>)}
           </tbody>
         </table>
@@ -58,10 +61,10 @@ export const YearsTable = localize(({ date, texts }) => {
       <div style={{ margin: 10 }}>
         <table style={{ textAlign: "center", border: borderStyle2 }}>
           <tbody>
-            {header}
-            {tabCol1.map((d, indx) => indx >= 32 && indx < 48 && <tr>
+            {header()}
+            {tabCol.map((d, indx) => indx >= 32 && indx < 48 && <tr>
               {d}
-              {tabCol1[indx + 16]}
+              {tabCol[indx + 16]}
             </tr>)}
           </tbody>
         </table>

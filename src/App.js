@@ -3,12 +3,12 @@ import React, { useState } from "react"
 import { Matrix } from "./Matrix"
 import { checkDate } from "./Utils"
 import { localize, useLocaleContext, LocaleProvider } from "./Locale"
-import { Donate, DonateBig } from "./Donate"
+import { DonateBig } from "./Donate"
+import { docxReport } from "./DocxReport"
 
 let defaultDate = localStorage.getItem("defDate") || "24.05.1975"
 
 export const App = localize(({ texts }) => {
-
   let [locale, _setLocale] = useState(() => localStorage.getItem('locale') || "ru")
 
   function setLocale(locale) {
@@ -42,15 +42,17 @@ const Main = localize(({ texts }) => {
 
   return (
     <>
-      <div className="noprint" style={{ margin: "20px 0 0 20px", display: "flex", alignItems: "center" }}>
+      <div className="noprint" style={{ margin: "10px 0 0 10px", display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         {alarm && <div style={{ color: "red" }}>{alarm}</div>}
         <input className="bp3-input" type="text" placeholder={texts.placeholder} onChange={(e) => setText(e.target.value)} value={text} />
         <button className="bp3-button" type="button" onClick={() => checkDate1(text)} style={{ margin: "0 10px 0 0" }}>{texts.renew}</button>
+        <button onClick={docxReport}  style={{ margin: "0 10px 0 0" }}>ms-word</button>
         <button onClick={window.print} style={{ margin: "0 10px 0 0" }}>{texts.toPrinter}</button>
         <button onClick={() => setLocale("ru")}>ru</button>
         <button onClick={() => setLocale("de")}>de</button>
         <button onClick={() => setLocale("en")}>en</button>
-        <Donate style={{ margin: "10px 5px 5px 5px" }} />
+        {/* <Donate style={{ margin: "10px 5px 5px 5px" }} /> */}
+        <DonateBig style={{ margin: "0 0 0 5px" }} />
       </div>
       {!alarm && <Matrix date={date} />}
     </>
