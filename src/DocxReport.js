@@ -1,4 +1,4 @@
-import { Paragraph, Document, Packer, VerticalAlign, Table } from "docx"
+import { Paragraph, Document, Packer, VerticalAlign, Table, WidthType } from "docx"
 import { saveAs } from "file-saver"
 import { resetIterator, getSerializeTab, getImage } from "./Storage"
 
@@ -15,6 +15,25 @@ export function docxReport() {
   const table = new Table({
     rows: 9,
     columns: 6,
+  });
+
+  const table2 = new Table({
+    rows: 9,
+    columns: 4,
+  });
+
+  const tableY1 = new Table({
+    rows: 17,
+    columns: 8,
+    width: 4000,
+    widthUnitType: WidthType.DXA,
+  });
+
+  const tableY2 = new Table({
+    rows: 17,
+    columns: 8,
+    width: 4000,
+    widthUnitType: WidthType.DXA,
   });
 
   table.getColumn(5).mergeCells(2, 3);
@@ -85,29 +104,13 @@ export function docxReport() {
   table.getRow(row).mergeCells(2, 3);
   table.getCell(row, 3).addParagraph(next());
 
-  const table2 = new Table({
-    rows: 9,
-    columns: 4,
-  });
-
   for (let i = 0; i < 9; i++)
     for (let j = 0; j < 4; j++)
       table2.getCell(i, j).addParagraph(next());
 
-  const tableY1 = new Table({
-    rows: 17,
-    columns: 8,
-  });
-
   for (let i = 1; i < 17; i++)
     for (let j = 0; j < 8; j++)
       tableY1.getCell(i, j).addParagraph(next());
-
-  const tableY2 = new Table({
-    rows: 17,
-    columns: 8,
-  });
-
 
   for (let i = 1; i < 17; i++)
     for (let j = 0; j < 8; j++)
@@ -136,7 +139,9 @@ export function docxReport() {
   doc.addTable(tableY2)
   doc.addParagraph(new Paragraph(""))
 
-  const image = doc.createImage(getImage())
+  doc.createImage(getImage(), 600, 600)
+
+  doc.addParagraph(next())
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   const packer = new Packer();
