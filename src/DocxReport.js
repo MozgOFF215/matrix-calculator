@@ -1,6 +1,6 @@
-import { Paragraph, TextRun, Document, Packer, TableAnchorType, VerticalAlign, Table, Image } from "docx"
+import { Paragraph, Document, Packer, VerticalAlign, Table } from "docx"
 import { saveAs } from "file-saver"
-import { resetIterator, getSerializeTab } from "./Storage"
+import { resetIterator, getSerializeTab, getImage } from "./Storage"
 
 function next() {
   return new Paragraph(getSerializeTab()).center()
@@ -136,7 +136,7 @@ export function docxReport() {
   doc.addTable(tableY2)
   doc.addParagraph(new Paragraph(""))
 
-  const image = doc.createImage()
+  const image = doc.createImage(getImage())
 
   doc.addParagraph(next())
 
