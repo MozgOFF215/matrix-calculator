@@ -1,9 +1,8 @@
 class SerializeTab {
-
 }
-
 SerializeTab.storage = []
 SerializeTab.iterator = 0
+//SerializeTab.image= 
 
 export function cleanSerializeTab() {
   SerializeTab.storage = []
@@ -20,4 +19,12 @@ export function getSerializeTab() {
 
 export function resetIterator() {
   SerializeTab.iterator = 0
+}
+
+export function saveImage(image) {
+  SerializeTab.image = image
+}
+
+export function getImage(){
+  return SerializeTab.image
 }

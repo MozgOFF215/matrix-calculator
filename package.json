@@ -5,6 +5,7 @@
   "dependencies": {
     "docx": "^5.0.0-rc3",
     "file-saver": "^2.0.2",
+    "html2canvas": "^1.0.0-rc.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0"

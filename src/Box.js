@@ -1,5 +1,6 @@
 import React, { useCallback } from "react"
 import { dateParse, getPosX, getPosY, solve, checkKey } from './Utils'
+import { saveImage } from "./Storage"
 
 function newNode(id, name, grad, diam = 500, color = undefined) {
   let node = { id, name, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
@@ -127,6 +128,8 @@ export function Box({ diam, dx, dy, date }) {
     })
 
     ctx.fillText(date, 70, 30)
+
+    saveImage(canvas.toDataURL("image/png"))
 
   }, [dd, mm, yy, date])
 
