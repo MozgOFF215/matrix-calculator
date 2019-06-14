@@ -1,14 +1,39 @@
-import { Paragraph, Document, Packer, VerticalAlign, Table, WidthType } from "docx"
+import { Paragraph, Document, Packer, VerticalAlign, Table, WidthType, BorderStyle, ImportDotx } from "docx"
 import { saveAs } from "file-saver"
 import { resetIterator, getSerializeTab, getImage } from "./Storage"
+import { template } from "./template"
+import b64toBlob from 'b64-to-blob'
+
+const importDotx = new ImportDotx()
 
 function next() {
   return new Paragraph(getSerializeTab()).center()
 }
 
-
 export function docxReport() {
   resetIterator()
+
+  let data = b64toBlob.b64toBlob(template, 'application/octet-stream')
+
+
+  importDotx.extract(data).then((templateDocument) => {
+    // This any needs fixing
+    const sectionProps = {
+      titlePage: templateDocument.titlePageIsDefined,
+    }
+
+    // const doc = new Document(undefined, sectionProps, {
+    //     template: templateDocument,
+    // });
+    // const paragraph = new Paragraph("Hello World");
+    // doc.addParagraph(paragraph);
+
+    // const packer = new Packer();
+    // packer.toBuffer(doc).then((buffer) => {
+    //     fs.writeFileSync("My Document.docx", buffer);
+    // });
+  })
+
 
   const doc = new Document();
 
@@ -16,6 +41,8 @@ export function docxReport() {
     rows: 9,
     columns: 6,
   });
+
+  table.getCell(0, 0).Borders.addBottomBorder(BorderStyle.DOUBLE, 3, "blue")
 
   const table2 = new Table({
     rows: 9,
