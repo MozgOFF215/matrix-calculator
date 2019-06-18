@@ -1,179 +1,91 @@
-import { Paragraph, Document, Packer, VerticalAlign, Table, WidthType, BorderStyle, ImportDotx } from "docx"
-import { saveAs } from "file-saver"
 import { resetIterator, getSerializeTab, getImage } from "./Storage"
 import { template } from "./template"
-import b64toBlob from 'b64-to-blob'
-
-const importDotx = new ImportDotx()
+import createReport from 'docx-templates'
 
 function next() {
-  return new Paragraph(getSerializeTab()).center()
+  return getSerializeTab()
 }
 
-export function docxReport() {
+export const docxReport = async ({ _page, _of }) => {
+
   resetIterator()
 
-  let data = b64toBlob.b64toBlob(template, 'application/octet-stream')
+  const byteCharacters = atob(template)
 
+  // image
 
-  importDotx.extract(data).then((templateDocument) => {
-    // This any needs fixing
-    const sectionProps = {
-      titlePage: templateDocument.titlePageIsDefined,
+  let data = {}
+
+  // first table
+  for (let i = 0; i < 32; i++) data["T1_" + i] = next()
+
+  // second table
+  for (let i = 0; i < 36; i++) data["T2_" + i] = next()
+
+  // third table
+  for (let i = 0; i < 128; i++) data["y" + i] = next()
+
+  // fourth table
+  for (let i = 0; i < 128; i++) data["z" + i] = next()
+
+  // header for third table
+  for (let i = 128; i < 132; i++) data["y" + i] = next()
+
+  // header for fourth table
+  for (let i = 128; i < 132; i++) data["z" + i] = next()
+
+  // header
+  data["header"] = next()
+
+  // footer
+  data["Page"] = _page
+  data["of"] = _of
+
+  const buffer = await createReport({
+    template: byteCharacters,
+    output: 'buffer',
+    data,
+    additionalJsContext: {
+      qrCode: url => {
+        //const dataUrl = createQrImage(url, { size: 500 });
+        const data = getImage().slice('data:image/png;base64,'.length)
+        return { width: 15, height: 15, data, extension: '.png' };
+      },
     }
-
-    // const doc = new Document(undefined, sectionProps, {
-    //     template: templateDocument,
-    // });
-    // const paragraph = new Paragraph("Hello World");
-    // doc.addParagraph(paragraph);
-
-    // const packer = new Packer();
-    // packer.toBuffer(doc).then((buffer) => {
-    //     fs.writeFileSync("My Document.docx", buffer);
-    // });
   })
 
+  function fixNumber(number) {
+    let value = number.toString()
+    return value.length === 1 ? "0" + value : value
+  }
 
-  const doc = new Document();
+  var m = new Date();
+  var dateString = m.getUTCFullYear() + fixNumber(m.getUTCMonth() + 1) + fixNumber(m.getUTCDate())
+    + "_" + fixNumber(m.getUTCHours()) + fixNumber(m.getUTCMinutes()) + fixNumber(m.getUTCSeconds())
 
-  const table = new Table({
-    rows: 9,
-    columns: 6,
-  });
-
-  table.getCell(0, 0).Borders.addBottomBorder(BorderStyle.DOUBLE, 3, "blue")
-
-  const table2 = new Table({
-    rows: 9,
-    columns: 4,
-  });
-
-  const tableY1 = new Table({
-    rows: 17,
-    columns: 8,
-    width: 4000,
-    widthUnitType: WidthType.DXA,
-  });
-
-  const tableY2 = new Table({
-    rows: 17,
-    columns: 8,
-    width: 4000,
-    widthUnitType: WidthType.DXA,
-  });
-
-  table.getColumn(5).mergeCells(2, 3);
-  table.getColumn(2).mergeCells(2, 3);
-
-  let row = 0;
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getRow(row).mergeCells(1, 4);
-
-  row = 1;
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getRow(row).mergeCells(1, 4);
-
-  row = 2;
-  table.getCell(row, 0).addParagraph(next());
-  table.getCell(row, 1).addParagraph(next());
-  table.getCell(row, 2).addParagraph(next()).setVerticalAlign(VerticalAlign.CENTER)
-  table.getCell(row, 3).addParagraph(next());
-  table.getCell(row, 4).addParagraph(next());
-  table.getCell(row, 5).addParagraph(next()).setVerticalAlign(VerticalAlign.CENTER)
-
-  row = 3;
-  table.getCell(row, 0).addParagraph(next());
-  table.getCell(row, 1).addParagraph(next());
-
-  table.getCell(row, 3).addParagraph(next());
-  table.getCell(row, 4).addParagraph(next());
-
-  row = 4;
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getCell(row, 2).addParagraph(next());
-  table.getRow(row).mergeCells(2, 3);
-  table.getCell(row, 3).addParagraph(next());
-
-  row = 5
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getRow(row).mergeCells(1, 4);
-
-  row = 6
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getCell(row, 2).addParagraph(next());
-  table.getRow(row).mergeCells(2, 3);
-  table.getCell(row, 3).addParagraph(next());
-
-  row = 7
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getCell(row, 2).addParagraph(next());
-  table.getRow(row).mergeCells(2, 3);
-  table.getCell(row, 3).addParagraph(next());
-
-  row = 8
-  table.getCell(row, 0).addParagraph(next());
-  table.getRow(row).mergeCells(0, 1);
-  table.getCell(row, 1).addParagraph(next());
-  table.getCell(row, 2).addParagraph(next());
-  table.getRow(row).mergeCells(2, 3);
-  table.getCell(row, 3).addParagraph(next());
-
-  for (let i = 0; i < 9; i++)
-    for (let j = 0; j < 4; j++)
-      table2.getCell(i, j).addParagraph(next());
-
-  for (let i = 1; i < 17; i++)
-    for (let j = 0; j < 8; j++)
-      tableY1.getCell(i, j).addParagraph(next());
-
-  for (let i = 1; i < 17; i++)
-    for (let j = 0; j < 8; j++)
-      tableY2.getCell(i, j).addParagraph(next());
-
-  tableY1.getCell(0, 0).addParagraph(next());
-  tableY1.getCell(0, 1).addParagraph(next());
-  tableY1.getRow(0).mergeCells(1, 3);
-  tableY1.getCell(0, 2).addParagraph(next());
-  tableY1.getCell(0, 3).addParagraph(next());
-  tableY1.getRow(0).mergeCells(3, 5);
-
-  tableY2.getCell(0, 0).addParagraph(next());
-  tableY2.getCell(0, 1).addParagraph(next());
-  tableY2.getRow(0).mergeCells(1, 3);
-  tableY2.getCell(0, 2).addParagraph(next());
-  tableY2.getCell(0, 3).addParagraph(next());
-  tableY2.getRow(0).mergeCells(3, 5);
-
-  doc.addTable(table)
-  doc.addParagraph(new Paragraph(""))
-  doc.addTable(table2)
-  doc.addParagraph(new Paragraph(""))
-  doc.addTable(tableY1)
-  doc.addParagraph(new Paragraph(""))
-  doc.addTable(tableY2)
-  doc.addParagraph(new Paragraph(""))
-
-  doc.createImage(getImage(), 600, 600)
-
-  doc.addParagraph(next())
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  const packer = new Packer();
-
-  packer.toBlob(doc).then(blob => {
-    saveAs(blob, "matrix.docx");
-  });
+  saveDataToFile(
+    buffer,
+    'matrix_' + dateString + '.docx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  );
 }
+
+
+const saveDataToFile = (data, fileName, mimeType) => {
+  const blob = new Blob([data], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+  downloadURL(url, fileName, mimeType);
+  setTimeout(() => {
+    window.URL.revokeObjectURL(url);
+  }, 1000);
+};
+
+const downloadURL = (data, fileName) => {
+  const a = document.createElement('a');
+  a.href = data;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.style = 'display: none';
+  a.click();
+  a.remove();
+};

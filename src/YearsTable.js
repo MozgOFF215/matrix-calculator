@@ -21,12 +21,13 @@ export const YearsTable = localize(({ date, texts }) => {
   }
 
   function header() {
-    return (<tr style={{ border: borderStyle2 }}>
-      <>{[0, 2].map(j => <>
-        <th key={j}>{s(texts.year)}</th>
-        <th key={j + 1} colSpan="3" style={{ borderRight: borderStyle2 }}>{s("a+b=c")}</th>
-      </>)}</>
-    </tr>)
+    return (
+      <tr style={{ border: borderStyle2 }}>
+        <th >{s(texts.year)}</th>
+        <th colSpan="3" style={{ borderRight: borderStyle2 }}>{s("a+b=c")}</th>
+        <th >{s(texts.year)}</th>
+        <th colSpan="3" style={{ borderRight: borderStyle2 }}>{s("a+b=c")}</th>
+      </tr>)
   }
 
   let tabCol = ring.map((d, indx) => {
@@ -50,7 +51,7 @@ export const YearsTable = localize(({ date, texts }) => {
         <table style={{ textAlign: "center", border: borderStyle2 }}>
           <tbody>
             {header()}
-            {tabCol.map((d, indx) => indx < 16 && <tr>
+            {tabCol.map((d, indx) => indx < 16 && <tr key={indx}>
               {d}
               {tabCol[indx + 16]}
             </tr>)}
@@ -62,7 +63,7 @@ export const YearsTable = localize(({ date, texts }) => {
         <table style={{ textAlign: "center", border: borderStyle2 }}>
           <tbody>
             {header()}
-            {tabCol.map((d, indx) => indx >= 32 && indx < 48 && <tr>
+            {tabCol.map((d, indx) => indx >= 32 && indx < 48 && <tr key={indx}>
               {d}
               {tabCol[indx + 16]}
             </tr>)}

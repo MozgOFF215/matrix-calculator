@@ -129,7 +129,9 @@ export function Box({ diam, dx, dy, date }) {
 
     ctx.fillText(date, 70, 30)
 
-    saveImage(canvas.toDataURL("image/png"))
+    let img = canvas.toDataURL("image/png")
+
+    saveImage(img)
 
   }, [dd, mm, yy, date])
 

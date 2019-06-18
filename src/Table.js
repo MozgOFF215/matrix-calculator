@@ -122,7 +122,7 @@ export const Table = localize(({ date, texts }) => {
 
   return (
     <>
-      <div style={{ margin: 10 }}>
+      <div key={1} style={{ margin: 10 }}>
         <table style={{ border: "2px solid gray" }}>
           <tbody>
             {val_h(texts.birthday, date)}
@@ -150,7 +150,7 @@ export const Table = localize(({ date, texts }) => {
         </table >
       </div>
 
-      <div style={{ margin: 10 }}>
+      <div key={2} style={{ margin: 10 }}>
         <table style={{ border: "2px solid gray" }}>
           <tbody>
             {header(texts.chakras, texts.physics, texts.energy, texts.emotions)}
@@ -196,7 +196,7 @@ Table.defaultProps = {
     total: "Total",
 
     earth: "Earth :",
-    sky: "Sky",
+    sky: "Sky :",
     male: "m :",
     female: "f :",
 
@@ -225,7 +225,7 @@ Table.defaultProps = {
     total: "Gesamt",
 
     earth: "Erde :",
-    sky: "Himmel",
+    sky: "Himmel :",
     male: "m :",
     female: "w :",
 

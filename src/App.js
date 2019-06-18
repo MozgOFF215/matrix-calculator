@@ -46,7 +46,7 @@ const Main = localize(({ texts }) => {
         {alarm && <div style={{ color: "red" }}>{alarm}</div>}
         <input className="bp3-input" type="text" placeholder={texts.placeholder} onChange={(e) => setText(e.target.value)} value={text} />
         <button className="bp3-button" type="button" onClick={() => checkDate1(text)} style={{ margin: "0 10px 0 0" }}>{texts.renew}</button>
-        <button onClick={docxReport}  style={{ margin: "0 10px 0 0" }}>ms-word</button>
+        <button onClick={() => docxReport({ _page: texts._page, _of: texts._of })} style={{ margin: "0 10px 0 0" }}>ms-word</button>
         <button onClick={window.print} style={{ margin: "0 10px 0 0" }}>{texts.toPrinter}</button>
         <button onClick={() => setLocale("ru")}>ru</button>
         <button onClick={() => setLocale("de")}>de</button>
@@ -65,17 +65,23 @@ Main.defaultProps = {
     invalidDate: "invalid date",
     toPrinter: "print",
     renew: "renew",
+    _page: "Page",
+    _of: "of",
   },
   "texts-de": {
     placeholder: "TT.MM.JJJJ",
     invalidDate: "ungültiges Datum",
     toPrinter: "drucken",
     renew: "renew",
+    _page: "Site",
+    _of: "von",
   },
   "texts-ru": {
     placeholder: "дд.мм.гггг",
     invalidDate: "неверная дата",
     toPrinter: "печать",
     renew: "обновить",
+    _page: "Страница",
+    _of: "из",
   }
 }
