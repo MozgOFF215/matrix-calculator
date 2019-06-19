@@ -3,7 +3,7 @@ import { template } from "./template"
 import createReport from 'docx-templates'
 
 function next() {
-  return getSerializeTab()
+  return getSerializeTab().value
 }
 
 export const docxReport = async ({ _page, _of }) => {

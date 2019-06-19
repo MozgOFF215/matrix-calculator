@@ -1,7 +1,7 @@
 import React from "react"
-import { dateParse, solve, mod, chekWithStyles } from "./Utils"
+import { dateParse, solve, mod, chekTripletWithStyles } from "./Utils"
 import { localize } from "./Locale"
-import { cleanSerializeTab, addToSerializeTab as s } from "./Storage"
+import { addToSerializeTab as s } from "./Storage"
 
 let borderStyle2 = "2px solid gray"
 
@@ -35,13 +35,13 @@ export const YearsTable = localize(({ date, texts }) => {
     let b = ring[(indx + 32) & 0x3f]
     let c = mod(d + ring[(indx + 32) & 0x3f])
 
-    let { sa, sb, sc } = chekWithStyles([a, b, c])
+    let [sa, sb, sc] = chekTripletWithStyles([a, b, c])
 
     return (<>
       <td style={{ color: "gray" }}><i>{s(getPeriod(indx))}</i></td>
-      <td style={{ color: "#000066", ...sa }}>{s(a)}</td>
-      <td style={{ color: "#003300", ...sb }}>{s(b)}</td>
-      <td style={{ borderRight: borderStyle2, ...sc }}>{s(c)}</td>
+      <td style={{ color: "#000066", ...sa.style }}>{s(sa)}</td>
+      <td style={{ color: "#003300", ...sb.style }}>{s(sb)}</td>
+      <td style={{ borderRight: borderStyle2, ...sc.style }}>{s(sc)}</td>
     </>)
   })
 

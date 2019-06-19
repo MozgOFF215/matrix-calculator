@@ -259,7 +259,7 @@ export function getAge(date, locale) {
   return res
 }
 
-export function checkKey(array) {
+export function checkTriplet(array) {
   let res = []
   let _keys = keys.slice()
   for (let i = 0; i < _keys.length; i++) {
@@ -285,17 +285,21 @@ export function checkKey(array) {
   return res
 }
 
-export function chekWithStyles(array, withHole) {
+export function chekTripletWithStyles(array, withHole) {
 
-  let keys = checkKey(array)
+  let keys = checkTriplet(array)
   let sa, sb, sc
   let color = "rgba(0,0,255,0.15)"
 
-  let a=keys.filter(i => i.b[0].m).length > 0
-  let b=keys.filter(i => i.b[1].m).length > 0
-  let c=keys.filter(i => i.b[2].m).length > 0
+  let a = keys.filter(i => i.b[0].m).length > 0
+  let b = keys.filter(i => i.b[1].m).length > 0
+  let c = keys.filter(i => i.b[2].m).length > 0
 
-  if (!b && !withHole) return { sa, sb, sc }
+  if (!b && !withHole) return [
+    { value: array[0], keys: [] },
+    { value: array[1], keys: [] },
+    { value: array[2], keys: [] }
+  ]
 
   if (keys.length > 0) {
     if (a) sa = { backgroundColor: color }
@@ -303,6 +307,10 @@ export function chekWithStyles(array, withHole) {
     if (c) sc = { backgroundColor: color }
   }
 
-  return { sa, sb, sc }
+  return [
+    { value: array[0], style: sa, keys: a && keys.map(i => i.key) },
+    { value: array[1], style: sb, keys: b && keys.map(i => i.key) },
+    { value: array[2], style: sc, keys: c && keys.map(i => i.key) }
+  ]
 }
 

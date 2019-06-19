@@ -1,15 +1,23 @@
+import { Exception } from "handlebars";
+
 class SerializeTab {
 }
 SerializeTab.storage = []
 SerializeTab.iterator = 0
-//SerializeTab.image= 
 
 export function cleanSerializeTab() {
   SerializeTab.storage = []
+  SerializeTab.iterator = 0
 }
 
 export function addToSerializeTab(value) {
-  SerializeTab.storage.push("" + value)
+
+  if (typeof value === "object") {
+    SerializeTab.storage.push(value)
+    return value.value
+  }
+
+  SerializeTab.storage.push({ value })
   return value
 }
 
@@ -25,6 +33,6 @@ export function saveImage(image) {
   SerializeTab.image = image
 }
 
-export function getImage(){
+export function getImage() {
   return SerializeTab.image
 }

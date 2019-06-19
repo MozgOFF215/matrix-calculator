@@ -1,5 +1,5 @@
 import React, { useCallback } from "react"
-import { dateParse, getPosX, getPosY, solve, checkKey } from './Utils'
+import { dateParse, getPosX, getPosY, solve, checkTriplet } from './Utils'
 import { saveImage, addToSerializeTab as s } from "./Storage"
 
 function newNode(id, name, grad, diam = 500, color = undefined) {
@@ -170,7 +170,7 @@ function checkNodes(nodes, id1, id2, id3) {
     if (id3 === d.id) focusNodes.push(d)
   })
 
-  let keys = checkKey(focusNodes.map(d => d.name))
+  let keys = checkTriplet(focusNodes.map(d => d.name))
   let a = keys.filter(i => i.b[0].m).length > 0
   let b = keys.filter(i => i.b[1].m).length > 0
   let c = keys.filter(i => i.b[2].m).length > 0
