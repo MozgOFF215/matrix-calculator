@@ -1,5 +1,3 @@
-import { Exception } from "handlebars";
-
 class SerializeTab {
 }
 SerializeTab.storage = []
