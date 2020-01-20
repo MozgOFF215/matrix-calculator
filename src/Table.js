@@ -2,6 +2,7 @@ import React from "react"
 import { mod, dateParse, solve, getAge, strToDate, chekTripletWithStyles } from "./Utils"
 import { localize, useLocaleContext } from "./Locale";
 import { cleanSerializeTab, addToSerializeTab as s } from "./Storage"
+import "./Table.css"
 
 let borderStyle = ""//"1px solid lightgray"
 
@@ -17,7 +18,22 @@ function rowC4S1_span(name, num1, num2) {
   s(sb)
   s(sc)
 
-  return (
+  if (sa.names && sa.names.length > 0)
+    return (
+      <tr>
+        <td colSpan="2">{name}</td>
+        <td className="CellWithComment" style={{ borderLeft: borderStyle, textAlign: "center", ...sa.style }}>{a}
+          <span className="CellComment">{sa.names.join('\n')}</span>
+        </td>
+        <td className="CellWithComment" colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center", ...sb.style }}>{b}
+          <span className="CellComment">{sb.names.join('\n')}</span>
+        </td>
+        <td className="CellWithComment" style={{ borderLeft: borderStyle, textAlign: "center", ...sc.style }}>{c}
+          <span className="CellComment">{sc.names.join('\n')}</span>
+        </td>
+      </tr>
+    )
+  else return (
     <tr>
       <td colSpan="2">{name}</td>
       <td style={{ borderLeft: borderStyle, textAlign: "center", ...sa.style }}>{a}</td>
@@ -39,7 +55,21 @@ function rowC4S1(name, num1, num2) {
   s(sb)
   s(sc)
 
-  return (
+  if (sa.names && sa.names.length > 0) return (
+    <tr>
+      <td>{name}</td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sa.style }}>{a}
+        <span className="CellComment">{sa.names.join('\n')}</span>
+      </td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sb.style }}>{b}
+        <span className="CellComment">{sb.names.join('\n')}</span>
+      </td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sc.style }}>{c}
+        <span className="CellComment">{sc.names.join('\n')}</span>
+      </td>
+    </tr>
+  )
+  else return (
     <tr>
       <td>{name}</td>
       <td style={{ textAlign: "center", ...sa.style }}>{a}</td>
@@ -61,7 +91,21 @@ function rowC4(name, num1, num2, num3) {
   s(sb)
   s(sc)
 
-  return (
+  if (sa.names && sa.names.length > 0) return (
+    <tr style={{ borderTop: borderStyle }}>
+      <td>{name}</td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sa.style }}>{a}
+        <span className="CellComment">{sa.names.join('\n')}</span>
+      </td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sb.style }}>{b}
+        <span className="CellComment">{sb.names.join('\n')}</span>
+      </td>
+      <td className="CellWithComment" style={{ textAlign: "center", ...sc.style }}>{c}
+        <span className="CellComment">{sc.names.join('\n')}</span>
+      </td>
+    </tr>
+  )
+  else return (
     <tr style={{ borderTop: borderStyle }}>
       <td>{name}</td>
       <td style={{ textAlign: "center", ...sa.style }}>{a}</td>
@@ -85,7 +129,9 @@ function headerC4(col1, col2, col3, col4) {
 function rowC2(name, value) {
   return (
     <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
-      <td colSpan="2">{s(name)}</td>
+      <td colSpan="2" class="CellWithComment">{s(name)}
+        <span class="CellComment">Here is a comment</span>
+      </td>
       <td colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(value)}</td>
     </tr>
   )
@@ -122,7 +168,7 @@ export const Table = localize(({ date, texts }) => {
 
   let summSE = mod(sky + earth)
   let [s_sky, s_earth, s_summSE] = chekTripletWithStyles([sky, earth, summSE], true)
-  
+
   let summMF = mod(m + f)
   let [s_m, s_f, s_summMF] = chekTripletWithStyles([m, f, summMF], true)
 

@@ -278,7 +278,7 @@ export function checkTriplet(array) {
     }
 
     if (a.every(d => d.m)) {
-      res.push({ key: i, b })
+      res.push({ key: i, b, name: _keys[i].name })
       console.log(i, _keys[i].name)
     }
   }
@@ -308,9 +308,9 @@ export function chekTripletWithStyles(array, withHole) {
   }
 
   return [
-    { value: array[0], style: sa, keys: a && keys.map(i => i.key) },
-    { value: array[1], style: sb, keys: b && keys.map(i => i.key) },
-    { value: array[2], style: sc, keys: c && keys.map(i => i.key) }
+    { value: array[0], style: sa, keys: a && keys.map(i => i.key), names: keys.map(i => i.name) },
+    { value: array[1], style: sb, keys: b && keys.map(i => i.key), names: keys.map(i => i.name) },
+    { value: array[2], style: sc, keys: c && keys.map(i => i.key), names: keys.map(i => i.name) }
   ]
 }
 
