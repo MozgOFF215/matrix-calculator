@@ -4,13 +4,13 @@
   "private": true,
   "dependencies": {
     "docx-templates": "^3.0.0",
-    "storyboard": "^3.1.4",
-    "storyboard-listener-console": "^3.1.4",
     "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.0"
+    "react-scripts": "3.0.0",
+    "storyboard": "^3.1.4",
+    "storyboard-listener-console": "^3.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
