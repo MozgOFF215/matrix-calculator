@@ -70,5 +70,5 @@ export const keys = _keys.map(d => {
   let words = d.split(" ")
   let k = words[0].split("-")
   let name = words.length === 1 ? "no name" : d.substring(words[0].length)
-  return { codes: k.map(c => +c), name }
+  return { codes: k.map(c => +c), name, fullName: d }
 })

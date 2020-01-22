@@ -1,6 +1,7 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import { dateParse, getPosX, getPosY, solve, checkTriplet } from './Utils'
 import { saveImage, addToSerializeTab as s } from "./Storage"
+import { localize } from "./Locale"
 
 function newNode(id, name, grad, diam = 500, color = undefined) {
   let node = { id, name, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
@@ -95,14 +96,48 @@ function createNodes({ a, b, c, d, e, a1, b1, c1, d1, a2, a3, a4, b2, b3, b4, c2
   ]
 }
 
-export function Box({ diam, dx, dy, date }) {
+export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
+  let [highlightedNodes, setHighlightedNodes] = useState([])
+  let [canvasDom, setCanvasDom] = useState()
+  let [selectedNode, setSelectedNode] = useState()
   let { d: dd, m: mm, y: yy } = dateParse(date)
 
+  const handler = useCallback(e => {
+    let x = +e.offsetX
+    let y = +e.offsetY
+    let nodes = []
+    console.log(x + ' ' + y)
+
+    for (let i = 0; i < highlightedNodes.length; i++) {
+      let dot = highlightedNodes[i]
+      let dx = x - dot.x
+      let dy = y - dot.y
+      if (dx * dx + dy * dy < 144) {
+        // tipCanvas.style.left = (dot.x) + "px";
+        // tipCanvas.style.top = (dot.y - 40) + "px";
+        // tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+        // //                  tipCtx.rect(0,0,tipCanvas.width,tipCanvas.height);
+        // tipCtx.fillText($(dot.tip).val(), 5, 15);
+        // hit = true;
+        console.log(dot)
+        nodes.push(dot)
+      }
+
+      if (nodes.length > 0) {
+        setSelectedNode({ x, y, name: nodes.map(d => d.key[0].fullName).join('\n') })
+      }
+      else setSelectedNode({ x, y })
+    }
+  },
+    [highlightedNodes]
+  )
+
   let refCanvas = useCallback(canvas => {
+    let highlightedNodes = []
     if (!canvas) return
     let nodes = checkKeysNodes(createNodes(solve(dd, mm, yy)))
     let ctx = canvas.getContext("2d")
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.textAlign = "center"
     ctx.baseLine = "middle"
 
@@ -112,10 +147,12 @@ export function Box({ diam, dx, dy, date }) {
       ctx.beginPath()
       ctx.arc(d.x, d.y, dc, 0, 2 * Math.PI)
       if (d.key) {
-        ctx.strokeStyle = "#7297d6";
+        // highlighted
+        highlightedNodes.push(d)
+        ctx.strokeStyle = "#7297d6"
         ctx.lineWidth = 5
       } else {
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "black"
         ctx.lineWidth = 3
       }
       ctx.stroke()
@@ -132,8 +169,18 @@ export function Box({ diam, dx, dy, date }) {
     let img = canvas.toDataURL("image/png")
 
     saveImage(img)
-
+    setHighlightedNodes(highlightedNodes)
+    setCanvasDom(canvas)
   }, [dd, mm, yy, date])
+
+  useEffect(() => {
+    if (!canvasDom) return
+    const eventListener = event => handler(event)
+    canvasDom.addEventListener('click', eventListener)
+    return () => {
+      canvasDom.removeEventListener('click', eventListener)
+    }
+  }, [canvasDom, handler])
 
   return (
     <div className="pagebreak">
@@ -143,13 +190,18 @@ export function Box({ diam, dx, dy, date }) {
         ref={refCanvas}
       >
       </canvas>
+      {(selectedNode && selectedNode.name) ? <div style={{ color: "blue", fontWeight: 700 }}>{selectedNode.name}</div> : <div>{pleaseClick}</div>
+      }
       <h5>{s("Generated on " + (new Date()).toDateString() + " by using Matrix calculator. Copyright © MozgOFF, 2019")}</h5>
     </div>)
-}
+})
 
 Box.defaultProps = {
   diam: 500,
-  dx: 20, dy: 20
+  dx: 20, dy: 20,
+  pleaseClick: "Try clicking on the highlighted node.",
+  "pleaseClick-de": "Versuchen auf den markierten Knoten zu klicken.",
+  "pleaseClick-ru": "Попробуйте кликнуть по подсвеченному узлу"
 }
 
 function checkNodes(nodes, id1, id2, id3) {
@@ -159,27 +211,27 @@ function checkNodes(nodes, id1, id2, id3) {
   //   if ([id1, id2, id3].includes(d.id)) d.key=1
   // })
 
-  let focusNodes = []
+  let highlightedNodes = []
   nodes.map(d => {
-    if (id1 === d.id) focusNodes.push(d)
+    if (id1 === d.id) highlightedNodes.push(d)
   })
   nodes.map(d => {
-    if (id2 === d.id) focusNodes.push(d)
+    if (id2 === d.id) highlightedNodes.push(d)
   })
   nodes.map(d => {
-    if (id3 === d.id) focusNodes.push(d)
+    if (id3 === d.id) highlightedNodes.push(d)
   })
 
-  let keys = checkTriplet(focusNodes.map(d => d.name))
-  let a = keys.filter(i => i.b[0].m).length > 0
-  let b = keys.filter(i => i.b[1].m).length > 0
-  let c = keys.filter(i => i.b[2].m).length > 0
+  let keys = checkTriplet(highlightedNodes.map(d => d.name))
+  let a = keys.filter(i => i.b[0].m)
+  let b = keys.filter(i => i.b[1].m)
+  let c = keys.filter(i => i.b[2].m)
 
-  if (!b) return
+  if (!b || b.length === 0) return
 
-  if (a) focusNodes[0].key = 1
-  if (b) focusNodes[1].key = 1
-  if (c) focusNodes[2].key = 1
+  if (a.length > 0) { highlightedNodes[0].key = a }
+  if (b.length > 0) { highlightedNodes[1].key = b }
+  if (c.length > 0) { highlightedNodes[2].key = c }
 }
 
 function checkNodes64(nodes, base) {

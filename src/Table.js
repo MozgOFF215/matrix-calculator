@@ -129,9 +129,7 @@ function headerC4(col1, col2, col3, col4) {
 function rowC2(name, value) {
   return (
     <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
-      <td colSpan="2" class="CellWithComment">{s(name)}
-        <span class="CellComment">Here is a comment</span>
-      </td>
+      <td colSpan="2">{s(name)}</td>
       <td colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(value)}</td>
     </tr>
   )

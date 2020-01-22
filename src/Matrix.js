@@ -1,8 +1,8 @@
 import React, { memo } from "react"
-import './Matrix.css'
 import { Box } from "./Box"
 import { Table } from "./Table"
 import { YearsTable } from "./YearsTable"
+import './Matrix.css'
 
 export const Matrix = memo(({ alarm, date }) => {
 
