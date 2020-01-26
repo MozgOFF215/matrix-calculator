@@ -1,4 +1,7 @@
-import { keys } from "./Keys"
+import { programNames } from "./programsList"
+import { collectNames } from "./Components"
+
+export function isDev() { return process.env.NODE_ENV === "development" }
 
 export function mod(number) {
   if (number > 22) {
@@ -259,57 +262,79 @@ export function getAge(date, locale) {
   return res
 }
 
-export function checkTriplet(array) {
-  let res = []
-  let _keys = keys.slice()
-  for (let i = 0; i < _keys.length; i++) {
-    let a = _keys[i].codes.map(d => ({ d }))
-    let b = array.map(d => ({ d }))
-    for (let k = 0; k < b.length; k++) {
-      for (let j = 0; j < a.length; j++) {
-        if (!a[j].m) {
-          if (a[j].d === b[k].d) {
-            a[j].m = true
-            b[k].m = true
-            break
-          }
-        }
+function _checkTriplet(n1, n2, n3, type = { fixOrder: false, withHole: false, isKarmicTail: false }) {
+
+  if (type.fixOrder) {
+    return programNames.filter(i => !!type.isKarmicTail === !!i.isKarmicTail).map(d => {
+      if (d.codes.length === 2) {
+        if (d.codes[0] === n1 && d.codes[1] === n2) return [d.PId, d.PId, 0]
+        if (d.codes[0] === n2 && d.codes[1] === n3) return [0, d.PId, d.PId]
+      }
+
+      if (d.codes[0] === n1 && d.codes[1] === n2 && d.codes[2] === n3) return [d.PId, d.PId, d.PId]
+
+      return [0, 0, 0]
+    })
+  }
+
+  let values = [n1, n2, n3].sort()
+
+  return programNames.filter(d => !!type.isKarmicTail === !!d.isKarmicTail).map(d => {
+    if (d.codes.length === 3) {
+      if (values.every((value, index) => value === d.codes.sort()[index])) return [d.PId, d.PId, d.PId]
+    }
+    else if (d.codes.length === 2) {
+
+      let n1n2 = [n1, n2].sort()
+      if (n1n2.every((value, index) => value === d.codes.sort()[index])) return [d.PId, d.PId, 0]
+
+      let n2n3 = [n2, n3].sort()
+      if (n2n3.every((value, index) => value === d.codes.sort()[index])) return [0, d.PId, d.PId]
+
+      if (type.withHole) {
+        let n1n3 = [n1, n3].sort()
+        if (n1n3.every((value, index) => value === d.codes.sort()[index])) return [d.PId, 0, d.PId]
       }
     }
 
-    if (a.every(d => d.m)) {
-      res.push({ key: i, b, name: _keys[i].name, fullName: _keys[i].fullName })
-      console.log(i, _keys[i].name)
-    }
-  }
-  return res
+    return [0, 0, 0]
+  })
+
 }
 
-export function chekTripletWithStyles(array, withHole) {
+function _linkTriplet(array) {
+  return [
+    Array.from(new Set(array.map(d => d[0]).filter(d => d))),
+    Array.from(new Set(array.map(d => d[1]).filter(d => d))),
+    Array.from(new Set(array.map(d => d[2]).filter(d => d))),
+  ]
+}
 
-  let keys = checkTriplet(array)
+export function checkTriplet(n1, n2, n3, type = { fixOrder: false, withHole: false, isKarmicTail: false }) {
+  return _linkTriplet(_checkTriplet(n1, n2, n3, type))
+}
+
+export function checkTripletWithStyles(n1, n2, n3, type) {
+
+  let [a, b, c] = checkTriplet(n1, n2, n3, type = { fixOrder: false, withHole: false, isKarmicTail: false })
   let sa, sb, sc
   let color = "rgba(0,0,255,0.15)"
 
-  let a = keys.filter(i => i.b[0].m).length > 0
-  let b = keys.filter(i => i.b[1].m).length > 0
-  let c = keys.filter(i => i.b[2].m).length > 0
-
-  if (!b && !withHole) return [
-    { value: array[0], keys: [] },
-    { value: array[1], keys: [] },
-    { value: array[2], keys: [] }
-  ]
-
-  if (keys.length > 0) {
-    if (a) sa = { backgroundColor: color }
-    if (b) sb = { backgroundColor: color }
-    if (c) sc = { backgroundColor: color }
+  if (!b.length > 0 && !type.withHole) {
+    return [
+      { value: n1, names: [] },
+      { value: n2, names: [] },
+      { value: n3, names: [] }
+    ]
   }
 
+  if (a.length > 0) sa = { backgroundColor: color }
+  if (b.length > 0) sb = { backgroundColor: color }
+  if (c.length > 0) sc = { backgroundColor: color }
+
   return [
-    { value: array[0], style: sa, keys: a && keys.map(i => i.key), names: keys.map(i => i.name) },
-    { value: array[1], style: sb, keys: b && keys.map(i => i.key), names: keys.map(i => i.name) },
-    { value: array[2], style: sc, keys: c && keys.map(i => i.key), names: keys.map(i => i.name) }
+    { value: n1, style: sa, names: collectNames(a) },
+    { value: n2, style: sb, names: collectNames(b) },
+    { value: n3, style: sc, names: collectNames(c) }
   ]
 }

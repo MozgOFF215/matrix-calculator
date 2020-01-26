@@ -1,8 +1,9 @@
 import React from "react"
-import { dateParse, solve, mod, chekTripletWithStyles } from "./Utils"
+import { dateParse, solve, mod, checkTripletWithStyles } from "./Utils"
 import { localize } from "./Locale"
 import { addToSerializeTab as s } from "./Storage"
 import "./Table.css"
+import { tdWithHint } from "./Components"
 
 let borderStyle2 = "2px solid gray"
 
@@ -36,26 +37,15 @@ export const YearsTable = localize(({ date, texts }) => {
     let b = ring[(indx + 32) & 0x3f]
     let c = mod(d + ring[(indx + 32) & 0x3f])
 
-    let [sa, sb, sc] = chekTripletWithStyles([a, b, c])
+    let [sa, sb, sc] = checkTripletWithStyles(a, b, c)
 
-    if (sa.names && sa.names.length > 0) return (<>
-      <td style={{ color: "gray" }}><i>{s(getPeriod(indx))}</i></td>
-      <td className="CellWithComment" style={{ color: "#000066", ...sa.style }}>{s(sa)}
-        <span className="CellComment">{sa.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ color: "#003300", ...sb.style }}>{s(sb)}
-        <span className="CellComment">{sb.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ borderRight: borderStyle2, ...sc.style }}>{s(sc)}
-        <span className="CellComment">{sc.names.join('\n')}</span>
-      </td>
-    </>)
-    else return (<>
-      <td style={{ color: "gray" }}><i>{s(getPeriod(indx))}</i></td>
-      <td style={{ color: "#000066", ...sa.style }}>{s(sa)}</td>
-      <td style={{ color: "#003300", ...sb.style }}>{s(sb)}</td>
-      <td style={{ borderRight: borderStyle2, ...sc.style }}>{s(sc)}</td>
-    </>)
+    return (
+      <>
+        <td style={{ color: "gray" }}><i>{s(getPeriod(indx))}</i></td>
+        {tdWithHint(s(sa), sa)}
+        {tdWithHint(s(sb), sb)}
+        {tdWithHint(s(sc), sc)}
+      </>)
   })
 
   return (

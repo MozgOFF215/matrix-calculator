@@ -1,10 +1,9 @@
 import React from "react"
-import { mod, dateParse, solve, getAge, strToDate, chekTripletWithStyles } from "./Utils"
+import { mod, dateParse, solve, getAge, strToDate, checkTripletWithStyles } from "./Utils"
 import { localize, useLocaleContext } from "./Locale";
 import { cleanSerializeTab, addToSerializeTab as s } from "./Storage"
+import { tdWithHint, spanWithHint } from "./Components";
 import "./Table.css"
-
-let borderStyle = ""//"1px solid lightgray"
 
 function rowC4S1_span(name, num1, num2) {
   s(name)
@@ -12,33 +11,18 @@ function rowC4S1_span(name, num1, num2) {
   let b = num2
   let c = mod(num1 + num2)
 
-  let [sa, sb, sc] = chekTripletWithStyles([a, b, c])
+  let [sa, sb, sc] = checkTripletWithStyles(a, b, c)
 
   s(sa)
   s(sb)
   s(sc)
 
-  if (sa.names && sa.names.length > 0)
-    return (
-      <tr>
-        <td colSpan="2">{name}</td>
-        <td className="CellWithComment" style={{ borderLeft: borderStyle, textAlign: "center", ...sa.style }}>{a}
-          <span className="CellComment">{sa.names.join('\n')}</span>
-        </td>
-        <td className="CellWithComment" colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center", ...sb.style }}>{b}
-          <span className="CellComment">{sb.names.join('\n')}</span>
-        </td>
-        <td className="CellWithComment" style={{ borderLeft: borderStyle, textAlign: "center", ...sc.style }}>{c}
-          <span className="CellComment">{sc.names.join('\n')}</span>
-        </td>
-      </tr>
-    )
-  else return (
+  return (
     <tr>
       <td colSpan="2">{name}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center", ...sa.style }}>{a}</td>
-      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center", ...sb.style }}>{b}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center", ...sc.style }}>{c}</td>
+      {tdWithHint(a, sa)}
+      {tdWithHint(b, sb, 2)}
+      {tdWithHint(c, sc)}
     </tr>
   )
 }
@@ -49,32 +33,18 @@ function rowC4S1(name, num1, num2) {
   let b = num2
   let c = mod(num1 + num2)
 
-  let [sa, sb, sc] = chekTripletWithStyles([a, b, c])
+  let [sa, sb, sc] = checkTripletWithStyles(a, b, c)
 
   s(sa)
   s(sb)
   s(sc)
 
-  if (sa.names && sa.names.length > 0) return (
+  return (
     <tr>
       <td>{name}</td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sa.style }}>{a}
-        <span className="CellComment">{sa.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sb.style }}>{b}
-        <span className="CellComment">{sb.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sc.style }}>{c}
-        <span className="CellComment">{sc.names.join('\n')}</span>
-      </td>
-    </tr>
-  )
-  else return (
-    <tr>
-      <td>{name}</td>
-      <td style={{ textAlign: "center", ...sa.style }}>{a}</td>
-      <td style={{ textAlign: "center", ...sb.style }}>{b}</td>
-      <td style={{ textAlign: "center", ...sc.style }}>{c}</td>
+      {tdWithHint(a, sa)}
+      {tdWithHint(b, sb)}
+      {tdWithHint(c, sc)}
     </tr>
   )
 }
@@ -85,32 +55,18 @@ function rowC4(name, num1, num2, num3) {
   let b = num2
   let c = num3
 
-  let [sa, sb, sc] = chekTripletWithStyles([a, b, c])
+  let [sa, sb, sc] = checkTripletWithStyles(a, b, c)
 
   s(sa)
   s(sb)
   s(sc)
 
-  if (sa.names && sa.names.length > 0) return (
-    <tr style={{ borderTop: borderStyle }}>
+  return (
+    <tr >
       <td>{name}</td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sa.style }}>{a}
-        <span className="CellComment">{sa.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sb.style }}>{b}
-        <span className="CellComment">{sb.names.join('\n')}</span>
-      </td>
-      <td className="CellWithComment" style={{ textAlign: "center", ...sc.style }}>{c}
-        <span className="CellComment">{sc.names.join('\n')}</span>
-      </td>
-    </tr>
-  )
-  else return (
-    <tr style={{ borderTop: borderStyle }}>
-      <td>{name}</td>
-      <td style={{ textAlign: "center", ...sa.style }}>{a}</td>
-      <td style={{ textAlign: "center", ...sb.style }}>{b}</td>
-      <td style={{ textAlign: "center", ...sc.style }}>{c}</td>
+      {tdWithHint(a, sa)}
+      {tdWithHint(b, sb)}
+      {tdWithHint(c, sc)}
     </tr>
   )
 }
@@ -128,9 +84,9 @@ function headerC4(col1, col2, col3, col4) {
 
 function rowC2(name, value) {
   return (
-    <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
+    <tr >
       <td colSpan="2">{s(name)}</td>
-      <td colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(value)}</td>
+      <td colSpan="4" style={{ textAlign: "center" }}>{s(value)}</td>
     </tr>
   )
 }
@@ -139,18 +95,18 @@ function headerC2(col1, col2) {
   return (
     <tr style={{ borderBottom: "2px solid gray" }}>
       <th colSpan="2">{s(col1)}</th>
-      <th colSpan="4" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(col2)}</th>
+      <th colSpan="4" style={{ textAlign: "center" }}>{s(col2)}</th>
     </tr>
   )
 }
 
 function rowC4_span(name1, num1, name2, num2) {
   return (
-    <tr style={{ borderBottom: borderStyle, borderTop: borderStyle }}>
+    <tr >
       <td colSpan="2">{s(name1)}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num1)}</td>
-      <td colSpan="2" style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(name2)}</td>
-      <td style={{ borderLeft: borderStyle, textAlign: "center" }}>{s(num2)}</td>
+      <td style={{ textAlign: "center" }}>{s(num1)}</td>
+      <td colSpan="2" style={{ textAlign: "center" }}>{s(name2)}</td>
+      <td style={{ textAlign: "center" }}>{s(num2)}</td>
     </tr>
   )
 }
@@ -165,10 +121,10 @@ export const Table = localize(({ date, texts }) => {
   let { a, b, c, d, a1, b1, c1, d1, a3, b3, a2, b2, a4, b4, c2, d2, e, sky, earth, m, f } = solve(dd, mm, yy)
 
   let summSE = mod(sky + earth)
-  let [s_sky, s_earth, s_summSE] = chekTripletWithStyles([sky, earth, summSE], true)
+  let [s_sky, s_earth, s_summSE] = checkTripletWithStyles(5, 11, 6, { withHole: true }) //sky, earth, summSE, true)
 
   let summMF = mod(m + f)
-  let [s_m, s_f, s_summMF] = chekTripletWithStyles([m, f, summMF], true)
+  let [s_m, s_f, s_summMF] = checkTripletWithStyles(m, f, summMF, { withHole: true })
 
   let spirit = mod(summSE + summMF)
   let genusPower = mod(a1 + b1 + c1 + d1)
@@ -184,17 +140,27 @@ export const Table = localize(({ date, texts }) => {
             {rowC2(texts.age, getAge(strToDate(date), locale))}
             <tr>
               <td style={headerStyle}>{s(texts.sky)}</td>
-              <td style={s_sky.style}>{s(s_sky)}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly" style={s_summSE.style}>{s(s_summSE)}</div></div></td>
+              <td style={s_sky.style} className="CellWithComment" >{s(s_sky)}{spanWithHint(s_sky)}</td>
+              <td rowSpan="2" className="CellWithComment" >
+                <div className="braces">
+                  <div className="curly" style={s_summSE.style}>{s(s_summSE)}</div>
+                </div>
+                {spanWithHint(s_summSE)}
+              </td>
               <td style={headerStyle}>{s(texts.male)}</td>
-              <td style={s_m.style}>{s(s_m)}</td>
-              <td rowSpan="2" ><div className="braces"><div className="curly" style={s_summMF.style}>{s(s_summMF)}</div></div></td>
+              <td style={s_m.style} className="CellWithComment">{s(s_m)}{spanWithHint(s_m)}</td>
+              <td rowSpan="2" className="CellWithComment">
+                <div className="braces">
+                  <div className="curly" style={s_summMF.style}>{s(s_summMF)}</div>
+                </div>
+                {spanWithHint(s_summMF)}
+              </td>
             </tr>
             <tr>
               <td style={headerStyle}>{s(texts.earth)}</td>
-              <td style={s_earth.style}>{s(s_earth)}</td>
+              <td style={s_earth.style} className="CellWithComment">{s(s_earth)}{spanWithHint(s_earth)}</td>
               <td style={headerStyle}>{s(texts.female)}</td>
-              <td style={s_f.style}>{s(s_f)}</td>
+              <td style={s_f.style} className="CellWithComment">{s(s_f)}{spanWithHint(s_f)}</td>
             </tr>
             {rowC4_span(texts.spiritual, spirit, texts.planetary, mod(spirit + summMF))}
             {rowC2(texts.power, genusPower)}

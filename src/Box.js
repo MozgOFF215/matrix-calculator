@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useEffect } from "react"
-import { dateParse, getPosX, getPosY, solve, checkTriplet } from './Utils'
+import { dateParse, getPosX, getPosY, solve, checkTriplet, isDev } from './Utils'
 import { saveImage, addToSerializeTab as s } from "./Storage"
 import { localize } from "./Locale"
+import { collectNames } from "./Components"
 
-function newNode(id, name, grad, diam = 500, color = undefined) {
-  let node = { id, name, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
+function newNode(id, value, grad, diam = 500, color = undefined) {
+  let node = { id, value, x: getPosX(grad, diam), y: getPosY(grad, diam), color }
 
   return node
 }
@@ -106,7 +107,7 @@ export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
     let x = +e.offsetX
     let y = +e.offsetY
     let nodes = []
-    console.log(x + ' ' + y)
+    if (isDev()) console.log(x + ' ' + y)
 
     for (let i = 0; i < highlightedNodes.length; i++) {
       let dot = highlightedNodes[i]
@@ -119,12 +120,14 @@ export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
         // //                  tipCtx.rect(0,0,tipCanvas.width,tipCanvas.height);
         // tipCtx.fillText($(dot.tip).val(), 5, 15);
         // hit = true;
-        console.log(dot)
+        if (isDev()) console.log(dot)
         nodes.push(dot)
       }
 
       if (nodes.length > 0) {
-        setSelectedNode({ x, y, name: nodes.map(d => d.key[0].fullName).join('\n') })
+        setSelectedNode({
+          x, y, name: collectNames(nodes.map(d=>d.PIds).flat())
+        })
       }
       else setSelectedNode({ x, y })
     }
@@ -146,7 +149,7 @@ export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
     nodes.map(d => {
       ctx.beginPath()
       ctx.arc(d.x, d.y, dc, 0, 2 * Math.PI)
-      if (d.key) {
+      if (d.PIds && d.PIds.length > 0) {
         // highlighted
         highlightedNodes.push(d)
         ctx.strokeStyle = "#7297d6"
@@ -161,7 +164,7 @@ export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
 
       ctx.lineWidth = 5
       ctx.fillStyle = "black"
-      ctx.fillText(d.name, d.x, d.y + 5)
+      ctx.fillText(d.value, d.x, d.y + 5)
     })
 
     ctx.fillText(date, 70, 30)
@@ -190,7 +193,7 @@ export const Box = localize(({ diam, dx, dy, date, pleaseClick }) => {
         ref={refCanvas}
       >
       </canvas>
-      {(selectedNode && selectedNode.name) ? <div style={{ color: "blue", fontWeight: 700 }}>{selectedNode.name}</div> : <div>{pleaseClick}</div>
+      {(selectedNode && selectedNode.name) ? selectedNode.name : <div>{pleaseClick}</div>
       }
       <h5>{s("Generated on " + (new Date()).toDateString() + " by using Matrix calculator. Copyright © MozgOFF, 2019")}</h5>
     </div>)
@@ -204,38 +207,25 @@ Box.defaultProps = {
   "pleaseClick-ru": "Попробуйте кликнуть по подсвеченному узлу"
 }
 
-function checkNodes(nodes, id1, id2, id3) {
+function checkNodes(nodes, id1, id2, id3, isKarmicTail) {
 
-  // for check
-  // nodes.map(d => {
-  //   if ([id1, id2, id3].includes(d.id)) d.key=1
-  // })
+  let a = nodes.find(d => id1 === d.id)
+  let b = nodes.find(d => id2 === d.id)
+  let c = nodes.find(d => id3 === d.id)
 
-  let highlightedNodes = []
-  nodes.map(d => {
-    if (id1 === d.id) highlightedNodes.push(d)
-  })
-  nodes.map(d => {
-    if (id2 === d.id) highlightedNodes.push(d)
-  })
-  nodes.map(d => {
-    if (id3 === d.id) highlightedNodes.push(d)
-  })
+  let keys = checkTriplet(a.value, b.value, c.value, { fixOrder: isKarmicTail, isKarmicTail })
 
-  let keys = checkTriplet(highlightedNodes.map(d => d.name))
-  let a = keys.filter(i => i.b[0].m)
-  let b = keys.filter(i => i.b[1].m)
-  let c = keys.filter(i => i.b[2].m)
+  let aPIds = !a.PIds ? [] : a.PIds
+  let bPIds = !b.PIds ? [] : b.PIds
+  let cPIds = !c.PIds ? [] : c.PIds
 
-  if (!b || b.length === 0) return
-
-  if (a.length > 0) { highlightedNodes[0].key = a }
-  if (b.length > 0) { highlightedNodes[1].key = b }
-  if (c.length > 0) { highlightedNodes[2].key = c }
+  a.PIds = [...new Set([...aPIds, ...keys[0]])]
+  b.PIds = [...new Set([...bPIds, ...keys[1]])]
+  c.PIds = [...new Set([...cPIds, ...keys[2]])]
 }
 
-function checkNodes64(nodes, base) {
-  checkNodes(nodes, base, i64(base + 1), i64(base + 2))
+function checkNodes64(nodes, base, isKarmicTail) {
+  checkNodes(nodes, base, i64(base + 1), i64(base + 2), isKarmicTail)
 }
 
 function checkKeysNodes(nodes) {
@@ -246,7 +236,7 @@ function checkKeysNodes(nodes) {
   checkNodes64(nodes, 24)
   checkNodes64(nodes, 32)
   checkNodes64(nodes, 40)
-  checkNodes64(nodes, 48)
+  checkNodes(nodes, 48, i64(48 + 2), i64(48 + 1), true) // karmic tail 48, 114, 113
   checkNodes64(nodes, 56)
 
   checkNodes(nodes, i64(32 + 2), i256(0), i256(1))
